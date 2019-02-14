@@ -14,4 +14,5 @@ Imports: shiny,
     shinyjs,
     dplyr,
     pool,
-    dbplyr
+    dbplyr,
+    magrittr

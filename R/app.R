@@ -24,8 +24,7 @@ allometr_app <- function() {
       shiny::sidebarLayout(
         sidebarPanel = shiny::sidebarPanel(
           width = 3,
-
-
+          mod_dataInput('data_inputs', allometr_db)
         ),
 
         mainPanel = shiny::mainPanel(

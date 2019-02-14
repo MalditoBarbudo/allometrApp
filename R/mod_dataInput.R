@@ -13,6 +13,7 @@ mod_dataInput <- function(id, allometr_db) {
   # tables
   allometries_table <- dplyr::tbl(allometr_db, 'ALLOMETRIES') %>% dplyr::collect()
   variables_thesaurus <- dplyr::tbl(allometr_db, 'THESAURUS_VARIABLES') %>% dplyr::collect()
+  cubication_thesaurus <- dplyr::tbl(allometr_db, 'THESAURUS_CUBICATION') %>% dplyr::collect()
 
   # choices
   spatial_choices <- allometries_table %>%
@@ -41,10 +42,21 @@ mod_dataInput <- function(id, allometr_db) {
         dplyr::pull(translation_eng)
     )
 
+  cubication_choices <- cubication_thesaurus %>%
+    dplyr::pull(cubication_shape_id) %>%
+    c('any', .) #%>%
+    # magrittr::set_names(
+    #   cubication_thesaurus %>%
+    #     dplyr::pull(translation_eng) %>%
+    #     c('Any', .)
+    # )
+
   # inputs
   shiny::tagList(
     # spatial
-    shiny::selectInput(ns('spatial'), 'Spatial ambit', choices = ''),
+    shiny::selectInput(
+      ns('spatial'), 'Spatial ambit', choices = spatial_choices, multiple = TRUE
+    ),
     shinyjs::hidden(
       shiny::div(
         id = 'spatial_values_div',
@@ -53,7 +65,9 @@ mod_dataInput <- function(id, allometr_db) {
     ),
 
     # functional group
-    shiny::selectInput(ns('functgroup'), 'Functional group', choices = '', multiple = TRUE),
+    shiny::selectInput(
+      ns('functgroup'), 'Functional group', choices = functgroup_choices, multiple = TRUE
+    ),
     shinyjs::hidden(
       shiny::div(
         id = 'spatial_values_div',
@@ -62,11 +76,18 @@ mod_dataInput <- function(id, allometr_db) {
     ),
 
     # vars
-    shiny::selectInput(ns('depvar'), 'Dependent variable', choices = ''),
-    shiny::selectInput(ns('indepvars'), 'Independent variables', choices = '', multiple = TRUE),
+    shiny::selectInput(
+      ns('depvar'), 'Dependent variable', choices = depvar_choices, multiple = TRUE
+    ),
+    shiny::selectInput(
+      ns('indepvars'), 'Independent variables',
+      choices = indepvars_choices, multiple = TRUE
+    ),
 
     # other
-    shiny::selectInput(ns('cubication'), 'Cubication shape', choices = ''),
+    shiny::selectInput(
+      ns('cubication'), 'Cubication shape', choices = cubication_choices, multiple = TRUE
+    ),
     shiny::selectInput(ns('specialparam'), 'Special parameter', choices = '')
   )
 }
@@ -83,5 +104,7 @@ mod_data <- function(
   input, output, session,
   allometr_db
 ) {
+
+
 
 }
