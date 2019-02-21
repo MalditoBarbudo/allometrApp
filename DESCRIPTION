@@ -1,4 +1,4 @@
-Package: Allometr
+Package: allometrApp
 Type: Package
 Title: Shiny app for the LFC allometries module
 Version: 0.0.0.9000
