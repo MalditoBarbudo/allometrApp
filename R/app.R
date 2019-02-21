@@ -1,7 +1,5 @@
 #' function to launch the nfi app
 #'
-#' @importFrom magrittr %>%
-#'
 #' @export
 allometr_app <- function() {
 
@@ -13,8 +11,14 @@ allometr_app <- function() {
     dbname = 'allometr_db'
   )
 
+  ## tables ####
+  allometries_table <- dplyr::tbl(allometr_db, 'ALLOMETRIES') %>% dplyr::collect()
+  variables_thesaurus <- dplyr::tbl(allometr_db, 'THESAURUS_VARIABLES') %>% dplyr::collect()
+  cubication_thesaurus <- dplyr::tbl(allometr_db, 'THESAURUS_CUBICATION') %>% dplyr::collect()
+
   ## UI ####
   ui <- shiny::tagList(
+    shinyjs::useShinyjs(),
     shiny::fluidPage(
 
       # title
@@ -24,11 +28,28 @@ allometr_app <- function() {
       shiny::sidebarLayout(
         sidebarPanel = shiny::sidebarPanel(
           width = 3,
-          mod_dataInput('data_inputs', allometr_db)
+          mod_dataInput(
+            'mod_dataInput',
+            allometries_table, variables_thesaurus, cubication_thesaurus
+          )
         ),
 
         mainPanel = shiny::mainPanel(
           width = 9,
+
+          ########################################################### debug ####
+          shiny::absolutePanel(
+            id = 'debug', class = 'panel panel-default', fixed = TRUE,
+            draggable = TRUE, width = 640, height = 'auto',
+            # top = 100, left = 100, rigth = 'auto', bottom = 'auto',
+            # top = 'auto', left = 'auto', right = 100, bottom = 100,
+            top = 60, left = 'auto', right = 50, bottom = 'auto',
+
+            shiny::textOutput('debug1'),
+            shiny::textOutput('debug2'),
+            shiny::textOutput('debug3')
+          ),
+          ####################################################### end debug ####
 
           shiny::fluidRow(
             DT::DTOutput('eqs_table')
@@ -53,37 +74,51 @@ allometr_app <- function() {
   ## SERVER ####
   server <- function(input, output, session) {
 
-    eq_tbl <- dplyr::tbl(allometr_db, 'ALLOMETRIES') %>% dplyr::collect()
-
-    output$eqs_table <- DT::renderDT({
-      eq_tbl %>%
-        dplyr::select(spatial_level:equation) %>%
-        # dplyr::slice(1:5) %>%
-        DT::datatable(selection = list(mode = 'multiple', selected = c(1)))
-    })
-
-    output$eq_info <- gt::render_gt(
-      eq_tbl %>%
-        dplyr::slice(input$eqs_table_rows_selected[1]) %>%
-        tidyr::gather('Vars', 'Values') %>%
-        gt::gt(rowname_col = 'Vars') %>%
-        gt::tab_header(
-          title = 'Detailed equation info'
-        )
+    data_reactives <- shiny::callModule(
+      mod_data, 'mod_dataInput',
+      allometries_table, variables_thesaurus, cubication_thesaurus
     )
 
-    output$equation_latex <- shiny::renderUI({
-      shiny::div(
-        style = 'font-size: 2.5em;',
-        shiny::withMathJax(
-          glue::glue(
-            "$$
-          {eq_tbl %>% dplyr::slice(input$eqs_table_rows_selected[1]) %>% dplyr::pull(equation)}
-          $$"
-          )
-        )
-      )
+    ## debug #####
+    output$debug1 <- shiny::renderPrint({
+      data_reactives$allolvl
     })
+    output$debug2 <- shiny::renderPrint({
+      data_reactives$spatial
+    })
+    output$debug3 <- shiny::renderPrint({
+      data_reactives$functgroup
+    })
+
+    # output$eqs_table <- DT::renderDT({
+    #   allometries_table %>%
+    #     dplyr::select(spatial_level:equation) %>%
+    #     # dplyr::slice(1:5) %>%
+    #     DT::datatable(selection = list(mode = 'multiple', selected = c(1)))
+    # })
+    #
+    # output$eq_info <- gt::render_gt(
+    #   allometries_table %>%
+    #     dplyr::slice(input$eqs_table_rows_selected[1]) %>%
+    #     tidyr::gather('Vars', 'Values') %>%
+    #     gt::gt(rowname_col = 'Vars') %>%
+    #     gt::tab_header(
+    #       title = 'Detailed equation info'
+    #     )
+    # )
+    #
+    # output$equation_latex <- shiny::renderUI({
+    #   shiny::div(
+    #     style = 'font-size: 2.5em;',
+    #     shiny::withMathJax(
+    #       glue::glue(
+    #         "$$
+    #       {allometries_table %>% dplyr::slice(input$eqs_table_rows_selected[1]) %>% dplyr::pull(equation)}
+    #       $$"
+    #       )
+    #     )
+    #   )
+    # })
   }
 
   # Run the application
@@ -93,7 +128,7 @@ allometr_app <- function() {
 
       ## on stop routine to cloose the db pool
       shiny::onStop(function() {
-        pool::poolClose(oracle_db)
+        pool::poolClose(allometr_db)
       })
     }
   )

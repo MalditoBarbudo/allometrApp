@@ -4,12 +4,17 @@
 \alias{mod_dataInput}
 \title{mod_dataInput and mod_data}
 \usage{
-mod_dataInput(id, allometr_db)
+mod_dataInput(id, allometries_table, variables_thesaurus,
+  cubication_thesaurus)
 }
 \arguments{
 \item{id}{shiny id}
 
-\item{allometr_db}{pool object to access the allometries db}
+\item{allometries_table}{table with allometries info from allometr_db}
+
+\item{variables_thesaurus}{table with variables info from allometr_db}
+
+\item{cubication_thesaurus}{table with cubication info from allometr_db}
 }
 \description{
 A shiny module to create and populate the data inputs

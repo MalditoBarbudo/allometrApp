@@ -4,7 +4,8 @@
 \alias{mod_data}
 \title{mod_data server function}
 \usage{
-mod_data(input, output, session, allometr_db)
+mod_data(input, output, session, allometries_table, variables_thesaurus,
+  cubication_thesaurus)
 }
 \arguments{
 \item{input}{internal}
@@ -13,7 +14,11 @@ mod_data(input, output, session, allometr_db)
 
 \item{session}{internal}
 
-\item{allometr_db}{pool object to access the allometries db}
+\item{allometries_table}{table with allometries info from allometr_db}
+
+\item{variables_thesaurus}{table with variables info from allometr_db}
+
+\item{cubication_thesaurus}{table with cubication info from allometr_db}
 }
 \description{
 mod_data server function

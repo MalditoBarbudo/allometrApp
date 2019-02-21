@@ -3,19 +3,22 @@
 #' @description A shiny module to create and populate the data inputs
 #'
 #' @param id shiny id
-#' @param allometr_db pool object to access the allometries db
+#' @param allometries_table table with allometries info from allometr_db
+#' @param variables_thesaurus table with variables info from allometr_db
+#' @param cubication_thesaurus table with cubication info from allometr_db
 #'
 #' @export
-mod_dataInput <- function(id, allometr_db) {
+mod_dataInput <- function(
+  id, allometries_table, variables_thesaurus, cubication_thesaurus
+) {
   # ns
   ns <- shiny::NS(id)
 
-  # tables
-  allometries_table <- dplyr::tbl(allometr_db, 'ALLOMETRIES') %>% dplyr::collect()
-  variables_thesaurus <- dplyr::tbl(allometr_db, 'THESAURUS_VARIABLES') %>% dplyr::collect()
-  cubication_thesaurus <- dplyr::tbl(allometr_db, 'THESAURUS_CUBICATION') %>% dplyr::collect()
-
   # choices
+  allometry_choices <- allometries_table %>%
+    dplyr::pull(allometry_level) %>%
+    unique() %>% sort()
+
   spatial_choices <- allometries_table %>%
     dplyr::pull(spatial_level) %>%
     unique() %>% sort()
@@ -51,33 +54,41 @@ mod_dataInput <- function(id, allometr_db) {
     #     c('Any', .)
     # )
 
+  specialparam_choices <- allometries_table %>%
+    dplyr::pull(special_param) %>% unique() %>% sort()
+
   # inputs
   shiny::tagList(
+    # allometry
+    shiny::selectInput(
+      ns('allolvl'), 'Allometry level',
+      choices = allometry_choices, multiple = TRUE
+    ),
+
     # spatial
     shiny::selectInput(
       ns('spatial'), 'Spatial ambit', choices = spatial_choices, multiple = TRUE
     ),
     shinyjs::hidden(
-      shiny::div(
-        id = 'spatial_values_div',
-        shiny::uiOutput(ns('spatial_values'))
-      )
+      shiny::uiOutput(ns('spatial_values'))
     ),
 
     # functional group
     shiny::selectInput(
-      ns('functgroup'), 'Functional group', choices = functgroup_choices, multiple = TRUE
+      ns('functgroup'), 'Functional group', choices = functgroup_choices,
+      multiple = TRUE
     ),
     shinyjs::hidden(
       shiny::div(
-        id = 'spatial_values_div',
+        id = ns('functgroup_values_div'),
         shiny::uiOutput(ns('functgroup_values'))
       )
     ),
 
     # vars
     shiny::selectInput(
-      ns('depvar'), 'Dependent variable', choices = depvar_choices, multiple = TRUE
+      ns('depvar'), 'Dependent variable',
+      choices = depvar_choices, multiple = TRUE
     ),
     shiny::selectInput(
       ns('indepvars'), 'Independent variables',
@@ -86,9 +97,13 @@ mod_dataInput <- function(id, allometr_db) {
 
     # other
     shiny::selectInput(
-      ns('cubication'), 'Cubication shape', choices = cubication_choices, multiple = TRUE
+      ns('cubication'), 'Cubication shape', choices = cubication_choices,
+      multiple = TRUE
     ),
-    shiny::selectInput(ns('specialparam'), 'Special parameter', choices = '')
+    shiny::selectInput(
+      ns('specialparam'), 'Special parameter',
+      choices = specialparam_choices, multiple = TRUE
+    )
   )
 }
 
@@ -97,14 +112,146 @@ mod_dataInput <- function(id, allometr_db) {
 #' @param output internal
 #' @param session internal
 #'
-#' @param allometr_db pool object to access the allometries db
+#' @param allometries_table table with allometries info from allometr_db
+#' @param variables_thesaurus table with variables info from allometr_db
+#' @param cubication_thesaurus table with cubication info from allometr_db
 #'
 #' @export
 mod_data <- function(
   input, output, session,
-  allometr_db
+  allometries_table, variables_thesaurus, cubication_thesaurus
 ) {
 
+  # observer to show the ui for spatial values
+  shiny::observe({
+    spatial <- input$spatial
 
+    if (is.null(spatial) || spatial == '') {
+      shinyjs::hide('spatial_values')
+    } else {
+      shinyjs::show('spatial_values')
+    }
+  })
 
+  output$spatial_values <- shiny::renderUI({
+
+    # ns
+    ns <- session$ns
+
+    # spatial level
+    spatial_vals <- input$spatial
+
+    # choices
+    spatial_values_choices <- allometries_table %>%
+      dplyr::filter(spatial_level == spatial_vals) %>%
+      dplyr::pull(spatial_name) %>% unique() %>% sort()
+
+    # UI
+    shiny::tagList(
+      shiny::selectInput(
+        ns('spatial_values_input'), 'Select the spatial ambit values',
+        choices = spatial_values_choices, multiple = TRUE
+      )
+    )
+  })
+
+  # observer to show the ui for functional group values
+  shiny::observeEvent(
+    eventExpr = input$functgroup,
+    handlerExpr = {
+      if (input$functgroup == '' | is.null(input$functgroup)) {
+        shinyjs::hide('functgroup_values_div')
+      } else {
+        shinyjs::show('functgroup_values_div')
+      }
+    }
+  )
+
+  output$functgroup_values <- shiny::renderUI({
+
+    # ns
+    ns <- session$ns
+
+    # functgroup level
+    functgroup_vals <- input$functgroup
+
+    # choices
+    functgroup_values_choices <- allometries_table %>%
+      dplyr::filter(functional_group_level == functgroup_vals) %>%
+      dplyr::pull(functional_group_name) %>% unique() %>% sort()
+
+    # UI
+    shiny::tagList(
+      shiny::selectInput(
+        ns('functgroup_values_input'), 'Select the functional group values',
+        choices = functgroup_values_choices, multiple = TRUE
+      )
+    )
+  })
+
+  # gather the inputs
+  data_inputs <- shiny::reactiveValues()
+  shiny::observe({
+    # inputs per se
+    data_inputs$allolvl <- input$allolvl
+    data_inputs$spatial <- input$spatial
+    data_inputs$spatial_values_input <- input$spatial_values_input
+    data_inputs$functgroup <- input$functgroup
+    data_inputs$functgroup_values_input <- input$functgroup_values_input
+    data_inputs$depvar <- input$depvar
+    data_inputs$indepvars <- input$indepvars
+    data_inputs$cubication <- input$cubication
+    data_inputs$specialparam <- input$specialparam
+  })
+
+  # reactive to create the filtering expression
+  filtering_expr <- shiny::reactive({
+
+    # filter exprs
+    rlang::quos(
+      allometry_level %in% !! input$allolvl,
+      spatial_level %in% !! input$spatial,
+      spatial_names %in% !! input$spatial_values_input,
+      functional_group_level %in% !! input$functgroup,
+      functional_group_names %in% !! input$functgroup_values_input,
+      dependent_var %in% !! input$depvar,
+      independent_var_1 %in% !! input$indepvars ||
+        independent_var_2 %in% !! input$indepvars ||
+        independent_var_3 %in% !! input$indepvars,
+      cubication_shape %in% !! input$cubication,
+      special_parameter %in% !! input$specialparam
+    ) %>%
+      # removing null or empty inputs
+      magrittr::extract(!purrr::map_lgl(list(
+        input$allolvl,
+        input$spatial,
+        input$spatial_values_input,
+        input$functgroup,
+        input$functgroup_values_input,
+        input$depvar,
+        input$indepvars,
+        input$cubication,
+        input$specialparam
+      ), is.null))
+
+  })
+
+  # gather the inputs
+  data_inputs <- shiny::reactiveValues()
+  shiny::observe({
+    # inputs per se
+    data_inputs$allolvl <- input$allolvl
+    data_inputs$spatial <- input$spatial
+    data_inputs$spatial_values_input <- input$spatial_values_input
+    data_inputs$functgroup <- input$functgroup
+    data_inputs$functgroup_values_input <- input$functgroup_values_input
+    data_inputs$depvar <- input$depvar
+    data_inputs$indepvars <- input$indepvars
+    data_inputs$cubication <- input$cubication
+    data_inputs$specialparam <- input$specialparam
+    # filtering expr
+    data_inputs$filtering_expr <- filtering_expr()
+  })
+
+  return(data_inputs)
 }
