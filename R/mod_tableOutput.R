@@ -37,11 +37,17 @@ mod_table <- function(
   allometries_table, variables_thesaurus, cubication_thesaurus, data_reactives
 ) {
 
-  # table output
-  output$allometries_table <- DT::renderDT({
+  # table_data (we seprate it from the render part to be able to pass the data to other
+  # modules)
+  table_data <- shiny::reactive({
     allometries_table %>%
       # filtering step, based on the data inputs
-      dplyr::filter(!!! data_reactives$filtering_expr) %>%
+      dplyr::filter(!!! data_reactives$filtering_expr)
+  })
+
+  # table output
+  output$allometries_table <- DT::renderDT({
+    table_data() %>%
       DT::datatable(
         selection = list(mode = 'multiple')
       )
@@ -51,6 +57,7 @@ mod_table <- function(
   table_inputs <- shiny::reactiveValues()
   shiny::observe({
     table_inputs$allometries_table_rows_selected <- input$allometries_table_rows_selected
+    table_inputs$table_data <- table_data()
   })
 
   # return the inputs
