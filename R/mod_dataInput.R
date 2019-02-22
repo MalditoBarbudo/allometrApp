@@ -64,6 +64,9 @@ mod_dataInput <- function(
       ns('allolvl'), 'Allometry level',
       choices = allometry_choices, multiple = TRUE
     ),
+    shinyjs::hidden(
+      shiny::uiOutput(ns('allo_values'))
+    ),
 
     # spatial
     shiny::selectInput(
@@ -121,6 +124,17 @@ mod_data <- function(
   input, output, session,
   allometries_table, variables_thesaurus, cubication_thesaurus
 ) {
+
+  # observer to show the ui for the allometry level values
+  shiny::observe({
+    allometry_level <- input$allolvl
+
+    if (is.null(allometry_level) || allometry_level == '') {
+      shinyjs::hide('allo_values')
+    } else {
+      shinyjs::show('allo_values')
+    }
+  })
 
   # observer to show the ui for spatial values
   shiny::observe({

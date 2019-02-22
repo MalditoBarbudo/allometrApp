@@ -66,6 +66,14 @@ mod_equation <- function(
   # index
   equation_index <- shiny::reactiveVal(1)
 
+  # resetting the equation_index everytime the table_data is refreshed
+  shiny::observeEvent(
+    eventExpr = table_reactives$table_data,
+    handlerExpr = {
+      equation_index(1)
+    }
+  )
+
   # equations list
   equation_list <- shiny::reactive({
     table_reactives$table_data %>%
@@ -116,9 +124,6 @@ mod_equation <- function(
     )
   })
 
-  ## TODO refresh the equation_index each time the table data changes to avoid errors
-  ## when the index is pointing to 5 and there is now only 3 elements for example
-  ##
   ## TODO consider to get rid of the selected rows and allow the carousel to iterate
   ## between all the equations present in the table. The selection load will be
   ## transferred to the filters in the inputs
