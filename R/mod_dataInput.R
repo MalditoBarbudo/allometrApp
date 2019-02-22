@@ -159,7 +159,7 @@ mod_data <- function(
   shiny::observeEvent(
     eventExpr = input$functgroup,
     handlerExpr = {
-      if (input$functgroup == '' | is.null(input$functgroup)) {
+      if (is.null(input$functgroup) || input$functgroup == '') {
         shinyjs::hide('functgroup_values_div')
       } else {
         shinyjs::show('functgroup_values_div')

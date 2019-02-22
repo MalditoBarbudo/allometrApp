@@ -38,17 +38,17 @@ allometr_app <- function() {
           width = 9,
 
           ########################################################### debug ####
-          shiny::absolutePanel(
-            id = 'debug', class = 'panel panel-default', fixed = TRUE,
-            draggable = TRUE, width = 640, height = 'auto',
-            # top = 100, left = 100, rigth = 'auto', bottom = 'auto',
-            # top = 'auto', left = 'auto', right = 100, bottom = 100,
-            top = 60, left = 'auto', right = 50, bottom = 'auto',
-
-            shiny::textOutput('debug1'),
-            shiny::textOutput('debug2'),
-            shiny::textOutput('debug3')
-          ),
+          # shiny::absolutePanel(
+          #   id = 'debug', class = 'panel panel-default', fixed = TRUE,
+          #   draggable = TRUE, width = 640, height = 'auto',
+          #   # top = 100, left = 100, rigth = 'auto', bottom = 'auto',
+          #   # top = 'auto', left = 'auto', right = 100, bottom = 100,
+          #   top = 60, left = 'auto', right = 50, bottom = 'auto',
+          #
+          #   shiny::textOutput('debug1'),
+          #   shiny::textOutput('debug2'),
+          #   shiny::textOutput('debug3')
+          # ),
           ####################################################### end debug ####
 
           shiny::fluidRow(
@@ -59,17 +59,7 @@ allometr_app <- function() {
           ),
           shiny::br(),
           shiny::br(),
-          shiny::fluidRow(
-            shiny::column(
-              width = 6,
-              gt::gt_output('eq_info')
-            ),
-            shiny::column(
-              width = 6,
-              # shiny::uiOutput('equation_latex')
-              mod_equationOutput('mod_equationOutput')
-            )
-          )
+          mod_equationOutput('mod_equationOutput')
         )
       )
     )
@@ -89,51 +79,20 @@ allometr_app <- function() {
       data_reactives
     )
 
-    equation_reactives <- shiny::callModule(
+    shiny::callModule(
       mod_equation, 'mod_equationOutput',
-      allometries_table, variables_thesaurus, cubication_thesaurus,
       data_reactives, table_reactives
     )
 
     ## debug #####
-    output$debug1 <- shiny::renderPrint({
-      data_reactives$allolvl
-    })
-    output$debug2 <- shiny::renderPrint({
-      data_reactives$spatial
-    })
-    output$debug3 <- shiny::renderPrint({
-      table_reactives$allometries_table_rows_selected
-    })
-
-    # output$eqs_table <- DT::renderDT({
-    #   allometries_table %>%
-    #     dplyr::select(spatial_level:equation) %>%
-    #     # dplyr::slice(1:5) %>%
-    #     DT::datatable(selection = list(mode = 'multiple', selected = c(1)))
+    # output$debug1 <- shiny::renderPrint({
+    #   data_reactives$allolvl
     # })
-    #
-    # output$eq_info <- gt::render_gt(
-    #   allometries_table %>%
-    #     dplyr::slice(input$eqs_table_rows_selected[1]) %>%
-    #     tidyr::gather('Vars', 'Values') %>%
-    #     gt::gt(rowname_col = 'Vars') %>%
-    #     gt::tab_header(
-    #       title = 'Detailed equation info'
-    #     )
-    # )
-    #
-    # output$equation_latex <- shiny::renderUI({
-    #   shiny::div(
-    #     style = 'font-size: 2.5em;',
-    #     shiny::withMathJax(
-    #       glue::glue(
-    #         "$$
-    #       {allometries_table %>% dplyr::slice(input$eqs_table_rows_selected[1]) %>% dplyr::pull(equation)}
-    #       $$"
-    #       )
-    #     )
-    #   )
+    # output$debug2 <- shiny::renderPrint({
+    #   data_reactives$spatial
+    # })
+    # output$debug3 <- shiny::renderPrint({
+    #   table_reactives$allometries_table_rows_selected
     # })
   }
 
@@ -149,6 +108,5 @@ allometr_app <- function() {
     }
   )
 
-  # shiny::runApp(nfi_app)
   return(allometr_app_res)
 }

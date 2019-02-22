@@ -15,18 +15,28 @@ mod_equationOutput <- function(id) {
   # https://stackoverflow.com/questions/51531743/image-slideshow-in-r-shiny)
   shiny::tagList(
     shiny::fluidRow(
+      # previous button
       shiny::column(
         width = 1,
+        shiny::br(),
         shinyWidgets::actionBttn(
           ns('equation_prev'), style = 'material-circle', icon = shiny::icon('arrow-circle-left')
         )
       ),
+      # equation info
       shiny::column(
-        width = 10,
+        width = 5,
+        gt::gt_output(ns('equation_info'))
+      ),
+      # equation latex
+      shiny::column(
+        width = 5,
         shiny::uiOutput(ns('equation_latex'))
       ),
+      # next button
       shiny::column(
         width = 1,
+        shiny::br(),
         shinyWidgets::actionBttn(
           ns('equation_next'), style = 'material-circle', icon = shiny::icon('arrow-circle-right')
         )
@@ -40,16 +50,12 @@ mod_equationOutput <- function(id) {
 #' @param output internal
 #' @param session internal
 #'
-#' @param allometries_table table with allometries info from allometr_db
-#' @param variables_thesaurus table with variables info from allometr_db
-#' @param cubication_thesaurus table with cubication info from allometr_db
 #' @param data_reactives data reactive inputs from mod_dataInput
 #' @param table_reactives table reactive inputs from mod_tableOutput
 #'
 #' @export
 mod_equation <- function(
   input, output, session,
-  allometries_table, variables_thesaurus, cubication_thesaurus,
   data_reactives, table_reactives
 ) {
 
@@ -83,7 +89,19 @@ mod_equation <- function(
     }
   )
 
-  # equation
+  # equation details
+  output$equation_info <- gt::render_gt({
+    table_reactives$table_data %>%
+      # double slice, first the rows selected in the table and after the equation index
+      dplyr::slice(table_reactives$allometries_table_rows_selected) %>%
+      dplyr::slice(equation_index()) %>%
+      # gather and convert to gt
+      tidyr::gather('Vars', 'Values') %>%
+      gt::gt(rowname_col = 'Vars') %>%
+      gt::tab_header(title = 'Detailed equation info')
+  })
+
+  # equation latex
   output$equation_latex <- shiny::renderUI({
 
     equation_selected <- equation_list()[equation_index()]
@@ -97,4 +115,11 @@ mod_equation <- function(
       )
     )
   })
+
+  ## TODO refresh the equation_index each time the table data changes to avoid errors
+  ## when the index is pointing to 5 and there is now only 3 elements for example
+  ##
+  ## TODO consider to get rid of the selected rows and allow the carousel to iterate
+  ## between all the equations present in the table. The selection load will be
+  ## transferred to the filters in the inputs
 }
