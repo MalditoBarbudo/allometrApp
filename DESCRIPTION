@@ -17,4 +17,5 @@ Imports:
     pool,
     dbplyr,
     magrittr,
-    glue
+    glue,
+    DT

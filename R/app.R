@@ -52,7 +52,10 @@ allometr_app <- function() {
           ####################################################### end debug ####
 
           shiny::fluidRow(
-            DT::DTOutput('eqs_table')
+            mod_tableOutput(
+              'mod_tableOutput',
+              allometries_table, variables_thesaurus, cubication_thesaurus
+            )
           ),
           shiny::br(),
           shiny::br(),
@@ -63,7 +66,8 @@ allometr_app <- function() {
             ),
             shiny::column(
               width = 6,
-              shiny::uiOutput('equation_latex')
+              # shiny::uiOutput('equation_latex')
+              mod_equationOutput('mod_equationOutput')
             )
           )
         )
@@ -79,6 +83,18 @@ allometr_app <- function() {
       allometries_table, variables_thesaurus, cubication_thesaurus
     )
 
+    table_reactives <- shiny::callModule(
+      mod_table, 'mod_tableOutput',
+      allometries_table, variables_thesaurus, cubication_thesaurus,
+      data_reactives
+    )
+
+    equation_reactives <- shiny::callModule(
+      mod_equation, 'mod_equationOutput',
+      allometries_table, variables_thesaurus, cubication_thesaurus,
+      data_reactives, table_reactives
+    )
+
     ## debug #####
     output$debug1 <- shiny::renderPrint({
       data_reactives$allolvl
@@ -87,7 +103,7 @@ allometr_app <- function() {
       data_reactives$spatial
     })
     output$debug3 <- shiny::renderPrint({
-      data_reactives$functgroup
+      table_reactives$allometries_table_rows_selected
     })
 
     # output$eqs_table <- DT::renderDT({

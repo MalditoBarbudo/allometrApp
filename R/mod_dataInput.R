@@ -143,7 +143,7 @@ mod_data <- function(
 
     # choices
     spatial_values_choices <- allometries_table %>%
-      dplyr::filter(spatial_level == spatial_vals) %>%
+      dplyr::filter(spatial_level %in% spatial_vals) %>%
       dplyr::pull(spatial_name) %>% unique() %>% sort()
 
     # UI
@@ -177,7 +177,7 @@ mod_data <- function(
 
     # choices
     functgroup_values_choices <- allometries_table %>%
-      dplyr::filter(functional_group_level == functgroup_vals) %>%
+      dplyr::filter(functional_group_level %in% functgroup_vals) %>%
       dplyr::pull(functional_group_name) %>% unique() %>% sort()
 
     # UI
@@ -211,9 +211,9 @@ mod_data <- function(
     rlang::quos(
       allometry_level %in% !! input$allolvl,
       spatial_level %in% !! input$spatial,
-      spatial_names %in% !! input$spatial_values_input,
+      spatial_name %in% !! input$spatial_values_input,
       functional_group_level %in% !! input$functgroup,
-      functional_group_names %in% !! input$functgroup_values_input,
+      functional_group_name %in% !! input$functgroup_values_input,
       dependent_var %in% !! input$depvar,
       independent_var_1 %in% !! input$indepvars ||
         independent_var_2 %in% !! input$indepvars ||
