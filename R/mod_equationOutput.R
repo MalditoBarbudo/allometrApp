@@ -14,32 +14,42 @@ mod_equationOutput <- function(id) {
   # let's do a carousel (code inspired from this answer
   # https://stackoverflow.com/questions/51531743/image-slideshow-in-r-shiny)
   shiny::tagList(
+
+    # carousel controls
     shiny::fluidRow(
-      # previous button
       shiny::column(
-        width = 1,
-        shiny::br(),
+        width = 1, offset = 4,
         shinyWidgets::actionBttn(
           ns('equation_prev'), style = 'material-circle', icon = shiny::icon('arrow-circle-left')
         )
       ),
+      shiny::column(
+        width = 2,
+        shiny::uiOutput(ns('carousel_indicator'))
+      ),
+      shiny::column(
+        width = 1,
+        shinyWidgets::actionBttn(
+          ns('equation_next'), style = 'material-circle', icon = shiny::icon('arrow-circle-right')
+        )
+      )
+    ),
+
+    # some vertical space
+    shiny::br(),
+    shiny::br(),
+
+    # carousel contents
+    shiny::fluidRow(
       # equation info
       shiny::column(
-        width = 5,
+        width = 6,
         gt::gt_output(ns('equation_info'))
       ),
       # equation latex
       shiny::column(
-        width = 5,
+        width = 6,
         shiny::uiOutput(ns('equation_latex'))
-      ),
-      # next button
-      shiny::column(
-        width = 1,
-        shiny::br(),
-        shinyWidgets::actionBttn(
-          ns('equation_next'), style = 'material-circle', icon = shiny::icon('arrow-circle-right')
-        )
       )
     )
   )
@@ -73,6 +83,11 @@ mod_equation <- function(
       equation_index(1)
     }
   )
+
+  # carousel indicator, to see the index and the total
+  output$carousel_indicator <- shiny::renderUI({
+    glue::glue("{equation_index()} / {nrow(table_reactives$table_data)}")
+  })
 
   # equations list
   equation_list <- shiny::reactive({
@@ -127,4 +142,6 @@ mod_equation <- function(
   ## TODO consider to get rid of the selected rows and allow the carousel to iterate
   ## between all the equations present in the table. The selection load will be
   ## transferred to the filters in the inputs
+  ##
+  ## TODO change the layout of the carousel
 }
