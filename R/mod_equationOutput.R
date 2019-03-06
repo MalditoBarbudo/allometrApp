@@ -18,17 +18,17 @@ mod_equationOutput <- function(id) {
     # carousel controls
     shiny::fluidRow(
       shiny::column(
-        width = 1, offset = 4,
+        width = 1, offset = 4, align = 'center',
         shinyWidgets::actionBttn(
           ns('equation_prev'), style = 'material-circle', icon = shiny::icon('arrow-circle-left')
         )
       ),
       shiny::column(
-        width = 2,
+        width = 1, align = 'center',
         shiny::uiOutput(ns('carousel_indicator'))
       ),
       shiny::column(
-        width = 1,
+        width = 1, align = 'center',
         shinyWidgets::actionBttn(
           ns('equation_next'), style = 'material-circle', icon = shiny::icon('arrow-circle-right')
         )

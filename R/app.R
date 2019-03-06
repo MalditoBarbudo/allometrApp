@@ -6,8 +6,8 @@ allometr_app <- function() {
   ## database ####
   allometr_db <- pool::dbPool(
     RPostgreSQL::PostgreSQL(),
-    user = 'ifn',
-    password = rstudioapi::askForPassword('Password for ifn'),
+    user = 'guest',
+    password = 'guest',
     dbname = 'allometr_db'
   )
 
@@ -27,7 +27,7 @@ allometr_app <- function() {
       # layout
       shiny::sidebarLayout(
         sidebarPanel = shiny::sidebarPanel(
-          width = 3,
+          width = 2,
           mod_dataInput(
             'mod_dataInput',
             allometries_table, variables_thesaurus, cubication_thesaurus
@@ -35,7 +35,7 @@ allometr_app <- function() {
         ),
 
         mainPanel = shiny::mainPanel(
-          width = 9,
+          width = 10,
 
           ########################################################### debug ####
           # shiny::absolutePanel(

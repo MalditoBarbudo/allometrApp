@@ -49,7 +49,13 @@ mod_table <- function(
   output$allometries_table <- DT::renderDT({
     table_data() %>%
       DT::datatable(
-        selection = list(mode = 'multiple')
+        class = 'compact hover nowrap row-border order-column',
+        options = list(
+          dom = 't',
+          paging = FALSE,
+          scrollY = '400px', scrollCollapse = TRUE, deferRender = TRUE, scrollX = TRUE,
+          fillContainer = TRUE
+        )
       )
   })
 

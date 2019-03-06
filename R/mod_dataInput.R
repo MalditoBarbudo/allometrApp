@@ -155,6 +155,9 @@ mod_data <- function(
     # spatial level
     spatial_vals <- input$spatial
 
+    # debug
+    browser()
+
     # choices
     spatial_values_choices <- allometries_table %>%
       dplyr::filter(spatial_level %in% spatial_vals) %>%
