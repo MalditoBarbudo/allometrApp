@@ -18,4 +18,5 @@ Imports:
     shinyjs,
     plotly,
     writexl,
-    DT
+    DT,
+    pool
