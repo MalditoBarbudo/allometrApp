@@ -4,7 +4,16 @@
 \alias{allometr_app}
 \title{function to launch the nfi app}
 \usage{
-allometr_app()
+allometr_app(file, shiny_args = list(host = "0.0.0.0", port = 3838),
+  render_params = list(appdb_user = "guest", appdb_password = "guest",
+  appdb_dbname = "allometr_db", appdb_host = "localhost"))
+}
+\arguments{
+\item{file}{character indicating the flexdashboard Rmd file to load}
+
+\item{shiny_args}{list with the shiny arguments for runApp}
+
+\item{render_params}{list of named parameters for the Rmd file}
 }
 \description{
 function to launch the nfi app
