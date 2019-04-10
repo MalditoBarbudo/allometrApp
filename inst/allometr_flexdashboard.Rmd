@@ -21,10 +21,7 @@ library(plotly)
 library(writexl)
 library(DT)
 
-## on stop routine to cloose the db pool
-shiny::onStop(function() {
-  pool::poolClose(allometr_db)
-})
+
 ```
 
 ```{r data}
@@ -42,6 +39,11 @@ allometries_table <- dplyr::tbl(allometr_db, 'ALLOMETRIES') %>% dplyr::collect()
 variables_thesaurus <- dplyr::tbl(allometr_db, 'THESAURUS_VARIABLES') %>% dplyr::collect()
 cubication_thesaurus <- dplyr::tbl(allometr_db, 'THESAURUS_CUBICATION') %>%
   dplyr::collect()
+
+## on stop routine to cloose the db pool
+# shiny::onStop(function() {
+  pool::poolClose(allometr_db)
+# })
 ```
 
 
