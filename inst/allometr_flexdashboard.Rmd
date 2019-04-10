@@ -21,6 +21,13 @@ library(plotly)
 library(writexl)
 library(DT)
 
+## on stop routine to cloose the db pool
+shiny::onStop(function() {
+  pool::poolClose(allometr_db)
+})
+```
+
+```{r data}
 # database
 allometr_db <- pool::dbPool(
   RPostgreSQL::PostgreSQL(),
@@ -35,12 +42,8 @@ allometries_table <- dplyr::tbl(allometr_db, 'ALLOMETRIES') %>% dplyr::collect()
 variables_thesaurus <- dplyr::tbl(allometr_db, 'THESAURUS_VARIABLES') %>% dplyr::collect()
 cubication_thesaurus <- dplyr::tbl(allometr_db, 'THESAURUS_CUBICATION') %>%
   dplyr::collect()
-
-## on stop routine to cloose the db pool
-shiny::onStop(function() {
-  pool::poolClose(allometr_db)
-})
 ```
+
 
 Sidebar {.sidebar}
 =====================================
@@ -603,7 +606,7 @@ Row
 ```{r table_ui}
 # table output
 # div(
-#   style = 'overflow: scroll',
+#   style = 'overflow-x: scroll',
   DTOutput('allometr_table')
 # )
 ```
@@ -615,9 +618,13 @@ output$allometr_table <- renderDT({
     dplyr::mutate_if(is.numeric, round, 3) %>%
     datatable(
       class = 'compact hover nowrap row-border order-column',
+      extensions = 'Scroller',
       options = list(
-        dom = 'pt',
-        pageLength = 25
+        dom = 'tr',
+        # pageLength = 10,
+        # lengthMenu = c(10, 25, 50),
+        deferRender = TRUE,
+        scrollY = '600px', scroller = TRUE, scrollX = TRUE
       )
     )
 })
