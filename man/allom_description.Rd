@@ -26,13 +26,13 @@ argument
 \examples{
 
 # by id
-foo <- allom_description("GC_2589")
+foo <- allom_description(id = "GC_2589")
 foo$GC_2589$dependent_var
 foo$GC_2589$param_a
 
 # filtering
-ht_dn_allometries <- allom_description(dependent_var \%in\% c("Ht", "Dn"))
-ht_dn_allometries$Ht_2589$dependent_var
-ht_dn_allometries$Ht_2589$param_a
+ht_dn_allometries <- allom_description(dependent_var \%in\% c("GC", "Dn"))
+ht_dn_allometries$GC_2589$dependent_var
+ht_dn_allometries$GC_2589$param_a
 
 }
