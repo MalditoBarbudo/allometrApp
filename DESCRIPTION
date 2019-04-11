@@ -19,4 +19,5 @@ Imports:
     plotly,
     writexl,
     DT,
-    pool
+    pool,
+    rlang
