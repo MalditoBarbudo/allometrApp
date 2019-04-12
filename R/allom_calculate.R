@@ -32,15 +32,30 @@ allom_calculate <- function(
   dots_vars <- rlang::enquos(..., .named = TRUE)
   # allometry description
   allo_desc <- allom_description(id = allometry_id)
+
   # equation modification to include it as a mutate argument
-  allo_desc[[allometry_id]][['equation']] %>%
+  eq_for_mutate <- allo_desc[[allometry_id]][['equation']] %>%
     stringr::str_split(pattern = ' = ', n = 2) %>%
     magrittr::extract2(1) %>%
-    magrittr::extract(2) %>%
-    # TODO independent vars NOT WORKING
-    stringr::str_replace_all(
-      pattern = names(dots_vars),
-      replacement = dots_vars %>% purrr::map_chr(~ rlang::as_name(.x))
-    )
+    magrittr::extract(2) %>% {
+      eq <- .
+      for (var in names(dots_vars)) {
+        eq <- stringr::str_replace_all(
+          eq, pattern = var,
+          replacement = dots_vars[[var]] %>% rlang::as_name()
+        )
+      }
+      eq
+    } %>%
+    eq_formatter()
 
+  # parameters from allometry (needed in equation)
+  param_a <- allo_desc[[allometry_id]][['param_a']]
+  param_b <- allo_desc[[allometry_id]][['param_b']]
+  param_c <- allo_desc[[allometry_id]][['param_c']]
+
+  data %>%
+    dplyr::mutate(
+      !!name := !! rlang::parse_expr(eq_for_mutate)
+    )
 }

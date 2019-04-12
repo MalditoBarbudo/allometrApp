@@ -1,7 +1,8 @@
 ---
 title: "Allometr App"
 output: 
-  flexdashboard::flex_dashboard
+  flexdashboard::flex_dashboard:
+    vertical_layout: fill
 runtime:
   shiny
 params:
@@ -20,8 +21,7 @@ library(shinyjs)
 library(plotly)
 library(writexl)
 library(DT)
-
-
+library(allometrApp)
 ```
 
 ```{r data}
@@ -635,12 +635,128 @@ output$allometr_table <- renderDT({
 Calculate
 =====================================
 
-### Por desarrollar
+Column {data-width=150}
+-------------------------------------
+
+### Data input
+
+```{r data_input}
+shiny::fileInput(
+  'user_data', NULL, FALSE,
+  accept = c(
+    '.csv', '.xlsx', 'text/csv', 'text/comma-separated-values,text/plain',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    buttonLabel = 'Browse...', placeholder = 'No file selected...'
+  )
+)
+
+user_data <- reactive({
+  
+  if (is.null(input$user_data)) {
+    return(NULL)
+  }
+  
+  extension <- input$user_data$name %>%
+    stringr::str_extract('\\.[a-zA-Z]{3,4}$')
+  if (extension == '.csv') {
+    readr::read_csv(input$user_data$datapath)
+  } else {
+    readxl::read_excel(input$user_data$filepath)
+  }
+})
+```
+
+### Select the allometry
+
+```{r allometry_selector}
+selectInput(
+  'allometry_selector', NULL, choices = ''
+)
+
+observe({
+  id_choices <- allometries_table %>%
+    dplyr::filter(!!! filtering_expr()) %>%
+    dplyr::pull(allometry_id)
+  
+  updateSelectInput(
+    session, 'allometry_selector', NULL, id_choices
+  )
+})
+```
+
+
+### Variables declaration
+
+```{r}
+uiOutput('var_declaration')
+
+output$var_declaration <- renderUI({
+  
+  shiny::validate(
+    shiny::need(user_data(), 'No user data provided')
+  )
+  
+  allom_id <- input$allometry_selector
+  allom_desc <- allom_description(id = allom_id)
+  
+  independent_vars <- c(
+    allom_desc[[allom_id]][['independent_var_1']],
+    allom_desc[[allom_id]][['independent_var_2']],
+    allom_desc[[allom_id]][['independent_var_3']]
+  ) %>%
+    purrr::discard(function(x) {is.na(x)})
+  
+  lapply(independent_vars, function(x) {
+    varSelectInput(glue::glue("{x}_input"), x, data = user_data())
+  })
+})
+
+allom_variables_exprs <- reactive({
+  
+  allom_id <- input$allometry_selector
+  allom_desc <- allom_description(id = allom_id)
+  
+  independent_vars <- c(
+    allom_desc[[allom_id]][['independent_var_1']],
+    allom_desc[[allom_id]][['independent_var_2']],
+    allom_desc[[allom_id]][['independent_var_3']]
+  ) %>%
+    purrr::discard(function(x) {is.na(x)})
+  
+  # TODO convert to Dn = Dn expressions
+    
+})
+```
+
+
+Column {data-width=400}
+-------------------------------------
+
+### Result table
+
+```{r}
+renderTable({
+  
+  # NOT WORKING
+  
+  user_data() %>%
+    allom_calculate(
+      !!! allom_variables_exprs(),
+      allometry_id = input$allometry_selector,
+      name = allom_description(id = input$allometry_selector)$variable_dependent
+    )
+})
+```
+
+
+
+### Download data
 
 ```{r}
 icon::fa('shapes', size = 5)
 ```
 
-
-
 Building blocks ...
+
+
+

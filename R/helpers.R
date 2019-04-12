@@ -45,3 +45,20 @@ allom_description <- function(..., id = NULL) {
   }
   return(res)
 }
+
+eq_formatter <- function(eq) {
+
+  eq_res <- eq
+
+  # · to *
+  eq_res <- stringr::str_replace_all(eq_res, '·', '*')
+  # ² to ^2
+  eq_res <- stringr::str_replace_all(eq_res, '²', '^2')
+  # params
+  eq_res <- stringr::str_replace(eq_res, '\\ba\\b', 'param_a')
+  eq_res <- stringr::str_replace(eq_res, '\\bb\\b', 'param_b')
+  eq_res <- stringr::str_replace(eq_res, '\\bc\\b', 'param_c')
+
+  return(eq_res)
+
+}
