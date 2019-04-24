@@ -744,8 +744,7 @@ Column {data-width=400}
 ### Result table
 
 ```{r}
-renderTable({
-  
+calculated_data <- reactive({
   shiny::validate(
     shiny::need(user_data(), 'No user data provided'),
     shiny::need(allom_variables_exprs(), 'No variables declaration provided'),
@@ -767,6 +766,11 @@ renderTable({
     rlang::parse_expr() %>%
     eval()
 })
+
+
+renderTable({
+  calculated_data()
+})
 ```
 
 
@@ -777,7 +781,41 @@ renderTable({
 icon::fa('shapes', size = 5)
 ```
 
-Building blocks ...
+```{r calculated_table}
+downloadLink('calculate_csv', 'csv')
+```
+
+```{r calculated_table_output, context="server"}
+output$calculate_csv <- downloadHandler(
+  filename = function() {
+    paste("calculated_allometry", Sys.Date(), '.csv', sep = '')
+  },
+  content = function(file) {
+    
+    data_res <- calculated_data()
+    
+    write_csv(data_res, file)
+  }
+)
+```
+
+```{r calculated_table_2}
+downloadLink('calculate_xlsx', 'xlsx')
+```
+
+```{r calculated_table_2_output, context="server"}
+output$calculate_xlsx <- downloadHandler(
+  filename = function() {
+    paste("calculated_allometry", Sys.Date(), '.xlsx', sep = '')
+  },
+  content = function(file) {
+    
+    data_res <- calculated_data()
+    
+    write_xlsx(data_res, file)
+  }
+)
+```
 
 
 
