@@ -659,10 +659,14 @@ user_data <- reactive({
   extension <- input$user_data$name %>%
     stringr::str_extract('\\.[a-zA-Z]{3,4}$')
   if (extension == '.csv') {
-    readr::read_csv(input$user_data$datapath)
+    res <- readr::read_csv(input$user_data$datapath) %>% dplyr::select_if(is.numeric)
   } else {
-    readxl::read_excel(input$user_data$filepath)
+    res <- readxl::read_excel(input$user_data$filepath) %>% dplyr::select_if(is.numeric)
   }
+  
+  # shiny::validate(
+  #   shiny::need(ncol(res) > 0 , 'No numeric columns detected in the data provided')
+  # )
 })
 ```
 
@@ -724,6 +728,11 @@ allom_variables_exprs <- reactive({
     purrr::discard(function(x) {is.na(x)})
   
   # TODO convert to Dn = Dn expressions
+  independent_vars %>%
+    purrr::map(
+      ~ glue::glue("{.x} = {input[[paste0(.x, '_input')]]},")
+    ) %>%
+    stringr::str_c(sep = ' ')
     
 })
 ```
@@ -737,14 +746,26 @@ Column {data-width=400}
 ```{r}
 renderTable({
   
-  # NOT WORKING
+  shiny::validate(
+    shiny::need(user_data(), 'No user data provided'),
+    shiny::need(allom_variables_exprs(), 'No variables declaration provided'),
+    shiny::need(length(allom_variables_exprs()) > 0, 'No variables declaration provided')
+    # shiny::need(
+    #   !is.character(user_data()[['']])
+    # )
+  )
   
-  user_data() %>%
+  # let's try to do it with glue + parse_exprs because it will be easier I think
+  glue::glue(
+    "user_data() %>%
     allom_calculate(
-      !!! allom_variables_exprs(),
-      allometry_id = input$allometry_selector,
-      name = allom_description(id = input$allometry_selector)$variable_dependent
-    )
+      {allom_variables_exprs()}
+      allometry_id = '{input$allometry_selector}',
+      name = '{allom_description(id = input$allometry_selector)[[input$allometry_selector]]$dependent_var}'
+    )"
+  ) %>%
+    rlang::parse_expr() %>%
+    eval()
 })
 ```
 
