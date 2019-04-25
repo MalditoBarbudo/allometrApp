@@ -773,13 +773,7 @@ renderTable({
 })
 ```
 
-
-
 ### Download data
-
-```{r}
-icon::fa('shapes', size = 5)
-```
 
 ```{r calculated_table}
 downloadLink('calculate_csv', 'csv')
