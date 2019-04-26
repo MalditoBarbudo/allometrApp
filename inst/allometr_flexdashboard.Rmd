@@ -253,52 +253,6 @@ shiny::observeEvent(
 Table {data-orientation=rows}
 =====================================
 
-Row {data-height=50}
--------------------------------------
-
-###
-
-```{r save_table}
-downloadLink('save_csv', 'csv')
-```
-
-```{r save_table_output, context="server"}
-output$save_csv <- downloadHandler(
-  filename = function() {
-    paste("allometries_", Sys.Date(), '.csv', sep = '')
-  },
-  content = function(file) {
-    
-    data_res <- allometries_table %>%
-    dplyr::filter(!!! filtering_expr())
-    
-    write_csv(data_res, file)
-  }
-)
-```
-
-###
-
-```{r save_table_2}
-downloadLink('save_xlsx', 'xlsx')
-```
-
-```{r save_table_2_output, context="server"}
-output$save_xlsx <- downloadHandler(
-  filename = function() {
-    paste("allometries_", Sys.Date(), '.xlsx', sep = '')
-  },
-  content = function(file) {
-    
-    data_res <- allometries_table %>%
-    dplyr::filter(!!! filtering_expr())
-    
-    write_xlsx(data_res, file)
-  }
-)
-```
-
-
 Row
 -------------------------------------
 
@@ -331,13 +285,57 @@ output$allometr_table <- renderDT({
 })
 ```
 
+Row {data-height=50}
+-------------------------------------
+
+### Download
+
+```{r save_table}
+downloadLink('save_csv', 'Download as a csv file')
+br()
+downloadLink('save_xlsx', 'Download as a xlsx file')
+```
+
+```{r save_table_output, context="server"}
+output$save_csv <- downloadHandler(
+  filename = function() {
+    paste("allometries_", Sys.Date(), '.csv', sep = '')
+  },
+  content = function(file) {
+    
+    data_res <- allometries_table %>%
+    dplyr::filter(!!! filtering_expr())
+    
+    write_csv(data_res, file)
+  }
+)
+
+output$save_xlsx <- downloadHandler(
+  filename = function() {
+    paste("allometries_", Sys.Date(), '.xlsx', sep = '')
+  },
+  content = function(file) {
+    
+    data_res <- allometries_table %>%
+    dplyr::filter(!!! filtering_expr())
+    
+    write_xlsx(data_res, file)
+  }
+)
+```
+
 Calculate
 =====================================
 
 Column {data-width=150}
 -------------------------------------
 
-### Data input
+### 
+
+#### Data input
+
+Please, select a file to load with the data to be converted. Accepted formats are
+**csv** and **xlsx**. Both of them must have a **header** with columns names
 
 ```{r data_input}
 shiny::fileInput(
@@ -360,7 +358,7 @@ user_data <- reactive({
   if (extension == '.csv') {
     res <- readr::read_csv(input$user_data$datapath) %>% dplyr::select_if(is.numeric)
   } else {
-    res <- readxl::read_excel(input$user_data$filepath) %>% dplyr::select_if(is.numeric)
+    res <- readxl::read_excel(input$user_data$datapath) %>% dplyr::select_if(is.numeric)
   }
   
   # shiny::validate(
@@ -369,11 +367,13 @@ user_data <- reactive({
 })
 ```
 
-### Select the allometry
+#### Select the allometry
+
+Select the allometry to use. If in doubt check the [allometry table](#table)
 
 ```{r allometry_selector}
 selectInput(
-  'allometry_selector', NULL, choices = ''
+  'allometry_selector', NULL, choices = '', size = 5, selectize = FALSE
 )
 
 observe({
@@ -388,7 +388,10 @@ observe({
 ```
 
 
-### Variables declaration
+#### Variables declaration
+
+Select the variables from the uploaded data corresponding to the independent variables
+from the equation:
 
 ```{r}
 uiOutput('var_declaration')
@@ -396,7 +399,8 @@ uiOutput('var_declaration')
 output$var_declaration <- renderUI({
   
   shiny::validate(
-    shiny::need(user_data(), 'No user data provided')
+    shiny::need(user_data(), 'No user data provided'),
+    shiny::need(input$allometry_selector, 'No user data provided')
   )
   
   allom_id <- input$allometry_selector
@@ -410,7 +414,13 @@ output$var_declaration <- renderUI({
     purrr::discard(function(x) {is.na(x)})
   
   lapply(independent_vars, function(x) {
-    varSelectInput(glue::glue("{x}_input"), x, data = user_data())
+    varSelectInput(
+      glue::glue("{x}_input"),
+      glue::glue("Variable acting as {x}"),
+      # x,
+      data = user_data(),
+      selectize = FALSE, size = 5
+    )
   })
 })
 
@@ -428,10 +438,15 @@ allom_variables_exprs <- reactive({
   
   # TODO convert to Dn = Dn expressions
   independent_vars %>%
-    purrr::map(
+    purrr::walk(
+      ~ shiny::validate(
+          shiny::need(input[[paste0(.x, '_input')]], 'No variable declaration')
+        )
+    ) %>%
+    purrr::map_chr(
       ~ glue::glue("{.x} = {input[[paste0(.x, '_input')]]},")
     ) %>%
-    stringr::str_c(sep = ' ')
+    stringr::str_c(collapse = ' ')
     
 })
 ```
@@ -446,18 +461,23 @@ Column {data-width=400}
 calculated_data <- reactive({
   shiny::validate(
     shiny::need(user_data(), 'No user data provided'),
-    shiny::need(allom_variables_exprs(), 'No variables declaration provided'),
-    shiny::need(length(allom_variables_exprs()) > 0, 'No variables declaration provided')
+    shiny::need(input$allometry_selector, 'No user data provided')
+    
     # shiny::need(
     #   !is.character(user_data()[['']])
     # )
+  )
+  
+  shiny::validate(
+    shiny::need(allom_variables_exprs(), 'No variables declaration provided'),
+    shiny::need(length(allom_variables_exprs()) > 0, 'No variables declaration provided')
   )
   
   # let's try to do it with glue + parse_exprs because it will be easier I think
   glue::glue(
     "user_data() %>%
     allom_calculate(
-      {allom_variables_exprs()}
+      {paste0(allom_variables_exprs(), sep = ' ')}
       allometry_id = '{input$allometry_selector}',
       name = '{allom_description(id = input$allometry_selector)[[input$allometry_selector]]$dependent_var}'
     )"
