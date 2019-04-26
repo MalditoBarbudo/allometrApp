@@ -356,9 +356,9 @@ user_data <- reactive({
   extension <- input$user_data$name %>%
     stringr::str_extract('\\.[a-zA-Z]{3,4}$')
   if (extension == '.csv') {
-    res <- readr::read_csv(input$user_data$datapath) %>% dplyr::select_if(is.numeric)
+    res <- readr::read_csv(input$user_data$datapath)
   } else {
-    res <- readxl::read_excel(input$user_data$datapath) %>% dplyr::select_if(is.numeric)
+    res <- readxl::read_excel(input$user_data$datapath)
   }
   
   # shiny::validate(
@@ -418,7 +418,7 @@ output$var_declaration <- renderUI({
       glue::glue("{x}_input"),
       glue::glue("Variable acting as {x}"),
       # x,
-      data = user_data(),
+      data = user_data() %>% dplyr::select_if(is.numeric),
       selectize = FALSE, size = 5
     )
   })
@@ -492,10 +492,12 @@ renderTable({
 })
 ```
 
-### Download data
+### Download data {data-height=50}
 
 ```{r calculated_table}
-downloadLink('calculate_csv', 'csv')
+downloadLink('calculate_csv', 'Download as a csv file')
+br()
+downloadLink('calculate_xlsx', 'Download as a xlsx file')
 ```
 
 ```{r calculated_table_output, context="server"}
@@ -510,13 +512,7 @@ output$calculate_csv <- downloadHandler(
     write_csv(data_res, file)
   }
 )
-```
 
-```{r calculated_table_2}
-downloadLink('calculate_xlsx', 'xlsx')
-```
-
-```{r calculated_table_2_output, context="server"}
 output$calculate_xlsx <- downloadHandler(
   filename = function() {
     paste("calculated_allometry", Sys.Date(), '.xlsx', sep = '')
@@ -529,6 +525,3 @@ output$calculate_xlsx <- downloadHandler(
   }
 )
 ```
-
-
-
