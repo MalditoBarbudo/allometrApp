@@ -288,12 +288,13 @@ output$allometr_table <- renderDT({
 Row {data-height=50}
 -------------------------------------
 
-### Download
+### Download allometries table
 
 ```{r save_table}
-downloadLink('save_csv', 'Download as a csv file')
-br()
-downloadLink('save_xlsx', 'Download as a xlsx file')
+fluidRow(
+  column(2, offset = 4, downloadLink('save_csv', 'Download as a csv file')),
+  column(2, downloadLink('save_xlsx', 'Download as a xlsx file'))
+)
 ```
 
 ```{r save_table_output, context="server"}
@@ -492,12 +493,13 @@ renderTable({
 })
 ```
 
-### Download data {data-height=50}
+### Download results {data-height=50}
 
 ```{r calculated_table}
-downloadLink('calculate_csv', 'Download as a csv file')
-br()
-downloadLink('calculate_xlsx', 'Download as a xlsx file')
+fluidRow(
+  column(2, offset = 4, downloadLink('calculate_csv', 'Download as a csv file')),
+  column(2, downloadLink('calculate_xlsx', 'Download as a xlsx file'))
+)
 ```
 
 ```{r calculated_table_output, context="server"}
