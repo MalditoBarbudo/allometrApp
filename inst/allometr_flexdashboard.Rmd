@@ -3,6 +3,7 @@ title: "Allometr App"
 output: 
   flexdashboard::flex_dashboard:
     vertical_layout: fill
+    theme: flatly
 runtime:
   shiny
 params:
