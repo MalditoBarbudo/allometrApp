@@ -4,7 +4,7 @@ Title: Shiny app for the LFC allometries module
 Version: 0.0.0.9000
 Author: person("Granda", "Víctor", email = "victorgrandagarcia@gmail.com",
                role = c("aut", "cre"))
-Description: Packa to maintain and improve the allometries module of the Laboratori
+Description: Package to maintain and improve the allometries module of the Laboratori
     Forestal Catalá Iniciative
 License: MIT + file LICENSE
 Encoding: UTF-8
