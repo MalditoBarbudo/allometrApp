@@ -9,6 +9,7 @@ allometr_db <- pool::dbPool(
 
 # tables
 allometries_table <- dplyr::tbl(allometr_db, 'ALLOMETRIES') %>% dplyr::collect()
+variables_thesaurus <- dplyr::tbl(allometr_db, 'THESAURUS_VARIABLES') %>% dplyr::collect()
 
 # close
 pool::poolClose(allometr_db)

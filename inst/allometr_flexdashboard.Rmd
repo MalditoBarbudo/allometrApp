@@ -19,6 +19,7 @@ library(flexdashboard)
 library(tidyverse)
 library(shiny)
 library(shinyjs)
+library(shinyWidgets)
 library(plotly)
 library(writexl)
 library(DT)
@@ -58,6 +59,30 @@ Sidebar {.sidebar}
 
 # shinyjs
 useShinyjs(rmd = TRUE)
+
+# language selector
+lang_choices <- c('cat', 'spa', 'eng')
+lang_flags <- c(
+  glue::glue("<img class='flag-image' src='cat.png' width=20px><div class='flag-lang'>%s</div></img>"),
+  glue::glue("<img class='flag-image' src='spa.png' width=20px><div class='flag-lang'>%s</div></img>"),
+  glue::glue("<img class='flag-image' src='eng.png' width=20px><div class='flag-lang'>%s</div></img>")
+)
+
+shinyWidgets::pickerInput(
+  'lang', NULL,
+  choices = lang_choices,
+  selected = 'cat',
+  width = '100px',
+  choicesOpt = list(
+    content = c(
+      sprintf(lang_flags[1], lang_choices[1]),
+      sprintf(lang_flags[2], lang_choices[2]),
+      sprintf(lang_flags[3], lang_choices[3])
+    )
+  )
+)
+
+  
 
 # shiny inputs defined here
 # choices

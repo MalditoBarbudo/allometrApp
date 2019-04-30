@@ -2,19 +2,11 @@
 % Please edit documentation in R/app.R
 \name{allometr_app}
 \alias{allometr_app}
-\title{function to launch the nfi app}
+\title{function to launch the allometr app}
 \usage{
-allometr_app(file, shiny_args = list(host = "0.0.0.0", port = 3838),
-  render_params = list(appdb_user = "guest", appdb_password = "guest",
-  appdb_dbname = "allometr_db", appdb_host = "localhost"))
-}
-\arguments{
-\item{file}{character indicating the flexdashboard Rmd file to load}
-
-\item{shiny_args}{list with the shiny arguments for runApp}
-
-\item{render_params}{list of named parameters for the Rmd file}
+allometr_app(user = "guest", password = "guest", host = NULL,
+  port = NULL, dbname = "allometr_db")
 }
 \description{
-function to launch the nfi app
+function to launch the allometr app
 }
