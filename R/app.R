@@ -160,7 +160,7 @@ allometr_app <- function(
                       )
                     ),
                     shiny::p(
-                      'Select the allometry to use. If in doubt check the ',
+                      'Select the allometries to use. If in doubt check the ',
                       shiny::actionLink('link_to_table', 'allometry table')
                     ),
                     shinyWidgets::pickerInput(
@@ -169,12 +169,6 @@ allometr_app <- function(
                         size = 5, liveSearch = TRUE
                       )
                     ),
-
-
-                    # shiny::selectInput(
-                    #   'allometry_selector', NULL, choices = '',
-                    #   multiple = TRUE
-                    # ),
                     shiny::p(
                       'Select the variables from the uploaded data corresponding to the ',
                       'independent variables from the equation:'
@@ -264,6 +258,8 @@ allometr_app <- function(
       } else {
         res <- readxl::read_excel(input$user_data$datapath)
       }
+
+      return(res)
     })
 
     observe({
@@ -307,12 +303,9 @@ allometr_app <- function(
       #   purrr::discard(function(x) {is.na(x)})
 
       lapply(independent_vars, function(x) {
-        varSelectInput(
-          glue::glue("{x}_input"),
-          glue::glue("Variable acting as {x}"),
-          # x,
-          data = user_data() %>% dplyr::select_if(is.numeric),
-          selectize = FALSE, size = 5
+        shinyWidgets::pickerInput(
+          glue::glue("{x}_input"), glue::glue("Variable acting as {x}"),
+          choices = user_data() %>% dplyr::select_if(is.numeric) %>% names()
         )
       })
     })
@@ -374,7 +367,8 @@ allometr_app <- function(
                  allom_calculate(
                    {paste0(allom_variables_exprs(), sep = ' ')}
                    allometry_id = '{.x}',
-                   name = '{allom_description(id = .x)[[.x]]$dependent_var}'
+                   # name = '{allom_description(id = .x)[[.x]]$dependent_var}'
+                   name = '{.x}'
                  )"
           )
         ) %>%
