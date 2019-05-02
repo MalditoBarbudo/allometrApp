@@ -64,9 +64,12 @@ allometr_app <- function(
   ## UI ####
   ui <- shiny::tagList(
 
+    # shinyjs
     shinyjs::useShinyjs(),
     # shinyWidgets::chooseSliderSkin(skin = "Shiny", color = '#0DB3D4'),
     # shinyWidgets::useSweetAlert(),
+
+    # css
     shiny::tags$head(
       # custom css
       shiny::includeCSS(
@@ -95,14 +98,6 @@ allometr_app <- function(
           )
         )
       ),
-
-      # custom css
-      # shiny::tags$head(
-      #   # custom css
-      #   shiny::includeCSS(
-      #     system.file('resources', 'allometr.css', package = 'allometrApp')
-      #   )
-      # )
 
       # navbarPage contents
       shiny::tabPanel(
@@ -169,7 +164,8 @@ allometr_app <- function(
                     ),
                     shiny::actionLink('link_to_table', 'allometry table'),
                     shiny::selectInput(
-                      'allometry_selector', NULL, choices = '', size = 5, selectize = FALSE
+                      'allometry_selector', NULL, choices = '',
+                      multiple = TRUE
                     ),
                     shiny::p(
                       'Select the variables from the uploaded data corresponding to the ',
@@ -279,15 +275,28 @@ allometr_app <- function(
         shiny::need(input$allometry_selector, 'No user data provided')
       )
 
+      # browser()
+
       allom_id <- input$allometry_selector
       allom_desc <- allom_description(id = allom_id)
 
-      independent_vars <- c(
-        allom_desc[[allom_id]][['independent_var_1']],
-        allom_desc[[allom_id]][['independent_var_2']],
-        allom_desc[[allom_id]][['independent_var_3']]
-      ) %>%
-        purrr::discard(function(x) {is.na(x)})
+      independent_vars <- allom_desc %>% {
+
+        iv1 <- purrr::map_depth(., 1, 'independent_var_1') %>% purrr::flatten_chr()
+        iv2 <- purrr::map_depth(., 1, 'independent_var_2') %>% purrr::flatten_chr()
+        iv3 <- purrr::map_depth(., 1, 'independent_var_3') %>% purrr::flatten_chr()
+
+        c(iv1, iv2, iv3) %>%
+          unique() %>%
+          purrr::discard(function(x) {is.na(x)})
+      }
+
+      # independent_vars <- c(
+      #   allom_desc[[allom_id]][['independent_var_1']],
+      #   allom_desc[[allom_id]][['independent_var_2']],
+      #   allom_desc[[allom_id]][['independent_var_3']]
+      # ) %>%
+      #   purrr::discard(function(x) {is.na(x)})
 
       lapply(independent_vars, function(x) {
         varSelectInput(
@@ -302,17 +311,22 @@ allometr_app <- function(
 
     allom_variables_exprs <- reactive({
 
+      # browser()
+
       allom_id <- input$allometry_selector
       allom_desc <- allom_description(id = allom_id)
 
-      independent_vars <- c(
-        allom_desc[[allom_id]][['independent_var_1']],
-        allom_desc[[allom_id]][['independent_var_2']],
-        allom_desc[[allom_id]][['independent_var_3']]
-      ) %>%
-        purrr::discard(function(x) {is.na(x)})
+      independent_vars <- allom_desc %>% {
 
-      # TODO convert to Dn = Dn expressions
+        iv1 <- purrr::map_depth(., 1, 'independent_var_1') %>% purrr::flatten_chr()
+        iv2 <- purrr::map_depth(., 1, 'independent_var_2') %>% purrr::flatten_chr()
+        iv3 <- purrr::map_depth(., 1, 'independent_var_3') %>% purrr::flatten_chr()
+
+        c(iv1, iv2, iv3) %>%
+          unique() %>%
+          purrr::discard(function(x) {is.na(x)})
+      }
+
       independent_vars %>%
         purrr::walk(
           ~ shiny::validate(
@@ -327,6 +341,9 @@ allometr_app <- function(
     })
 
     calculated_data <- reactive({
+
+      # browser()
+
       shiny::validate(
         shiny::need(user_data(), 'No user data provided'),
         shiny::need(input$allometry_selector, 'No user data provided')
@@ -342,16 +359,20 @@ allometr_app <- function(
       )
 
       # let's try to do it with glue + parse_exprs because it will be easier I think
-      glue::glue(
-        "user_data() %>%
-           allom_calculate(
-             {paste0(allom_variables_exprs(), sep = ' ')}
-             allometry_id = '{input$allometry_selector}',
-             name = '{allom_description(id = input$allometry_selector)[[input$allometry_selector]]$dependent_var}'
-           )"
-      ) %>%
-        rlang::parse_expr() %>%
-        eval()
+      input$allometry_selector %>%
+        purrr::map_chr(
+          ~ glue::glue(
+              "user_data() %>%
+                 allom_calculate(
+                   {paste0(allom_variables_exprs(), sep = ' ')}
+                   allometry_id = '{.x}',
+                   name = '{allom_description(id = .x)[[.x]]$dependent_var}'
+                 )"
+          )
+        ) %>%
+        rlang::parse_exprs() %>%
+        purrr::map(~ eval(.x)) %>%
+        purrr::reduce(dplyr::left_join)
     })
 
     output$res_data <- renderTable({
