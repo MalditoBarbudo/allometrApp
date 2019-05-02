@@ -67,10 +67,16 @@ allometr_app <- function(
     shinyjs::useShinyjs(),
     # shinyWidgets::chooseSliderSkin(skin = "Shiny", color = '#0DB3D4'),
     # shinyWidgets::useSweetAlert(),
+    shiny::tags$head(
+      # custom css
+      shiny::includeCSS(
+        system.file('resources', 'allometrapp.css', package = 'allometrApp')
+      )
+    ),
 
     navbarPageWithInputs(
       # opts
-      title = 'AllometrApp',
+      title = '',
       id = 'nav',
       collapsible = TRUE,
 
@@ -100,7 +106,7 @@ allometr_app <- function(
 
       # navbarPage contents
       shiny::tabPanel(
-        title = '',
+        title = 'AllometrApp',
         ########################################################### debug ####
         # shiny::absolutePanel(
         #   id = 'debug', class = 'panel panel-default', fixed = TRUE,
@@ -118,19 +124,24 @@ allometr_app <- function(
 
           sidebarPanel = shiny::sidebarPanel(
             width = 3,
-            mod_dataInput('mod_dataInput')
+            shiny::h4('Filter the allometries'),
+            mod_dataInput('mod_dataInput'),
+            # download buttons
+            shiny::h4('Download allometries table'),
+            shiny::downloadButton('download_allotable_csv', 'csv'),
+            shiny::downloadButton('download_allotable_xlsx', 'xlsx')
           ),
           mainPanel = shiny::mainPanel(
             width = 9,
 
             # tabset panel
             shiny::tabsetPanel(
+              id = 'tabs_panel',
 
               # table tab
               shiny::tabPanel(
                 'Table',
                 DT::DTOutput('allometr_table')
-                # download buttons
               ),
 
               # calculate panel
@@ -140,6 +151,11 @@ allometr_app <- function(
                 shiny::fluidRow(
                   shiny::column(
                     4,
+                    shiny::p(
+                      'Please, select a file to load with the data to be converted. ',
+                      'Accepted formats are csv and xlsx.',
+                      'Both of them must have a header with columns names.'
+                    ),
                     shiny::fileInput(
                       'user_data', NULL, FALSE,
                       accept = c(
@@ -148,10 +164,22 @@ allometr_app <- function(
                         buttonLabel = 'Browse...', placeholder = 'No file selected...'
                       )
                     ),
-                    selectInput(
+                    shiny::p(
+                      'Select the allometry to use. If in doubt check the '
+                    ),
+                    shiny::actionLink('link_to_table', 'allometry table'),
+                    shiny::selectInput(
                       'allometry_selector', NULL, choices = '', size = 5, selectize = FALSE
                     ),
-                    uiOutput('var_declaration')
+                    shiny::p(
+                      'Select the variables from the uploaded data corresponding to the ',
+                      'independent variables from the equation:'
+                    ),
+                    shiny::uiOutput('var_declaration'),
+                    # download buttons
+                    shiny::h4('Download calculated allometries'),
+                    shiny::downloadButton('download_alloresults_csv', 'csv'),
+                    shiny::downloadButton('download_alloresults_xlsx', 'xlsx')
                   ),
                   shiny::column(
                     8,
@@ -189,6 +217,14 @@ allometr_app <- function(
     data_reactives <- shiny::callModule(
       mod_data, 'mod_dataInput',
       allometries_table, variables_thesaurus, cubication_thesaurus, lang
+    )
+
+    ## link to table ####
+    shiny::observeEvent(
+      input$link_to_table,
+      {
+        shiny::updateTabsetPanel(session, 'tabs_panel', 'Table')
+      }
     )
 
     ## allo table ####
@@ -321,7 +357,60 @@ allometr_app <- function(
     output$res_data <- renderTable({
       calculated_data()
     })
-  }
+
+    ## download allo table ####
+    output$download_allotable_csv <- downloadHandler(
+      filename = function() {
+        paste("allometries_table_", Sys.Date(), '.csv', sep = '')
+      },
+      content = function(file) {
+
+        data_res <- allometries_table %>%
+          dplyr::filter(!!! data_reactives$filtering_expr)
+
+        readr::write_csv(data_res, file)
+      }
+    )
+
+    output$download_allotable_xlsx <- downloadHandler(
+      filename = function() {
+        paste("allometries_table_", Sys.Date(), '.xlsx', sep = '')
+      },
+      content = function(file) {
+
+        data_res <- allometries_table %>%
+          dplyr::filter(!!! data_reactives$filtering_expr)
+
+        writexl::write_xlsx(data_res, file)
+      }
+    )
+
+    ## download res table ####
+    output$download_alloresults_csv <- downloadHandler(
+      filename = function() {
+        paste("calculated_allometry", Sys.Date(), '.csv', sep = '')
+      },
+      content = function(file) {
+
+        data_res <- calculated_data()
+
+        readr::write_csv(data_res, file)
+      }
+    )
+
+    output$download_alloresults_xlsx <- downloadHandler(
+      filename = function() {
+        paste("calculated_allometry", Sys.Date(), '.xlsx', sep = '')
+      },
+      content = function(file) {
+
+        data_res <- calculated_data()
+
+        writexl::write_xlsx(data_res, file)
+      }
+    )
+
+  } # end of server function
 
   # Run the application
   allometrApp <- shiny::shinyApp(
