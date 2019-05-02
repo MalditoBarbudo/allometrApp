@@ -160,13 +160,21 @@ allometr_app <- function(
                       )
                     ),
                     shiny::p(
-                      'Select the allometry to use. If in doubt check the '
+                      'Select the allometry to use. If in doubt check the ',
+                      shiny::actionLink('link_to_table', 'allometry table')
                     ),
-                    shiny::actionLink('link_to_table', 'allometry table'),
-                    shiny::selectInput(
-                      'allometry_selector', NULL, choices = '',
-                      multiple = TRUE
+                    shinyWidgets::pickerInput(
+                      'allometry_selector', NULL, choices = '', multiple = TRUE,
+                      options = shinyWidgets::pickerOptions(
+                        size = 5, liveSearch = TRUE
+                      )
                     ),
+
+
+                    # shiny::selectInput(
+                    #   'allometry_selector', NULL, choices = '',
+                    #   multiple = TRUE
+                    # ),
                     shiny::p(
                       'Select the variables from the uploaded data corresponding to the ',
                       'independent variables from the equation:'
