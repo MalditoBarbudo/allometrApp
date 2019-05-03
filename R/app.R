@@ -379,7 +379,7 @@ allometr_app <- function(
 
       shiny::validate(
         shiny::need(user_data(), 'No user data provided'),
-        shiny::need(input$allometry_selector, 'No user data provided')
+        shiny::need(input$allometry_selector, 'No allometries selected')
 
         # shiny::need(
         #   !is.character(user_data()[['']])
