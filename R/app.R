@@ -128,7 +128,7 @@ allometr_app <- function(
                   dependent_var = list(inputId = 'dependent_var', title = 'Dependent variable'),
                   independent_var_1 = list(inputId = 'independent_var_1', title = 'Independent variable 1'),
                   independent_var_2 = list(inputId = 'independent_var_2', title = 'Independent variable 2'),
-                  independent_var_3 = list(inputId = 'independent_var_3', title = 'Independent variable 3'),
+                  # independent_var_3 = list(inputId = 'independent_var_3', title = 'Independent variable 3'),
                   allometry_level = list(inputId = 'allometry_level', title = 'Allometry levels'),
                   spatial_level = list(inputId = 'spatial_level', title = 'Spatial levels'),
                   spatial_level_name = list(inputId = 'spatial_level_name', title = 'Spatial level values'),
@@ -239,7 +239,7 @@ allometr_app <- function(
       shinyWidgets::selectizeGroupServer, id = 'allometries_filters',
       data = allometries_table,
       vars = c(
-        'dependent_var', 'independent_var_1', 'independent_var_2', 'independent_var_3',
+        'dependent_var', 'independent_var_1', 'independent_var_2', #'independent_var_3',
         'allometry_level', 'spatial_level', 'spatial_level_name', 'functional_group_level',
         'functional_group_level_name', 'cubication_shape', 'special_param'
       )
