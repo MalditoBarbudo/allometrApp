@@ -33,13 +33,20 @@ allom_calculate <- function(
   # allometry description
   allo_desc <- allom_description(id = allometry_id)
 
+  dots_vars_4_eq <- names(dots_vars) %>%
+    magrittr::extract(. %in% c(
+      allo_desc[[allometry_id]][['independent_var_1']],
+      allo_desc[[allometry_id]][['independent_var_2']],
+      allo_desc[[allometry_id]][['independent_var_3']]
+    ))
+
   # equation modification to include it as a mutate argument
   eq_for_mutate <- allo_desc[[allometry_id]][['equation']] %>%
     stringr::str_split(pattern = ' = ', n = 2) %>%
     magrittr::extract2(1) %>%
     magrittr::extract(2) %>% {
       eq <- .
-      for (var in names(dots_vars)) {
+      for (var in dots_vars_4_eq) {
         eq <- stringr::str_replace_all(
           eq, pattern = var,
           replacement = dots_vars[[var]] %>% rlang::as_name()

@@ -79,7 +79,7 @@ allometr_app <- function(
 
     navbarPageWithInputs(
       # opts
-      title = '',
+      title = 'AllometrApp',
       id = 'nav',
       collapsible = TRUE,
 
@@ -101,7 +101,7 @@ allometr_app <- function(
 
       # navbarPage contents
       shiny::tabPanel(
-        title = 'AllometrApp',
+        title = 'Explore',
         ########################################################### debug ####
         # shiny::absolutePanel(
         #   id = 'debug', class = 'panel panel-default', fixed = TRUE,
@@ -115,96 +115,104 @@ allometr_app <- function(
         #   shiny::textOutput('debug3')
         # ),
         ####################################################### end debug ####
-        shiny::sidebarLayout(
+        shiny::fluidPage(
+          shiny::sidebarLayout(
 
-          sidebarPanel = shiny::sidebarPanel(
-            width = 3,
-            shiny::h4('Filter the allometries'),
-            # mod_dataInput('mod_dataInput'),
-            shinyWidgets::selectizeGroupUI(
-              id = 'allometries_filters', inline = FALSE,
-              params = list(
-                dependent_var = list(inputId = 'dependent_var', title = 'Dependent variable'),
-                independent_var_1 = list(inputId = 'independent_var_1', title = 'Independent variable 1'),
-                independent_var_2 = list(inputId = 'independent_var_2', title = 'Independent variable 2'),
-                independent_var_3 = list(inputId = 'independent_var_3', title = 'Independent variable 3'),
-                allometry_level = list(inputId = 'allometry_level', title = 'Allometry levels'),
-                spatial_level = list(inputId = 'spatial_level', title = 'Spatial levels'),
-                spatial_level_name = list(inputId = 'spatial_level_name', title = 'Spatial level values'),
-                functional_group_level = list(inputId = 'functional_group_level', title = 'Functional group'),
-                functional_group_level_name = list(inputId = 'functional_group_level_name', title = 'Functional group values'),
-                cubication_shape = list(inputId = 'cubication_shape', title = 'Cubication shape'),
-                special_param = list(inputId = 'special_param', title = 'Special parameter')
-              )
-            ),
-            # download buttons
-            shiny::h4('Download allometries table'),
-            shiny::downloadButton('download_allotable_csv', 'csv'),
-            shiny::downloadButton('download_allotable_xlsx', 'xlsx')
-          ),
-          mainPanel = shiny::mainPanel(
-            width = 9,
-
-            # tabset panel
-            shiny::tabsetPanel(
-              id = 'tabs_panel',
-
-              # table tab
-              shiny::tabPanel(
-                'Table',
-                DT::DTOutput('allometr_table')
+            sidebarPanel = shiny::sidebarPanel(
+              width = 2,
+              shiny::h4('Filter the allometries'),
+              # mod_dataInput('mod_dataInput'),
+              shinyWidgets::selectizeGroupUI(
+                id = 'allometries_filters', inline = FALSE,
+                params = list(
+                  dependent_var = list(inputId = 'dependent_var', title = 'Dependent variable'),
+                  independent_var_1 = list(inputId = 'independent_var_1', title = 'Independent variable 1'),
+                  independent_var_2 = list(inputId = 'independent_var_2', title = 'Independent variable 2'),
+                  independent_var_3 = list(inputId = 'independent_var_3', title = 'Independent variable 3'),
+                  allometry_level = list(inputId = 'allometry_level', title = 'Allometry levels'),
+                  spatial_level = list(inputId = 'spatial_level', title = 'Spatial levels'),
+                  spatial_level_name = list(inputId = 'spatial_level_name', title = 'Spatial level values'),
+                  functional_group_level = list(inputId = 'functional_group_level', title = 'Functional group'),
+                  functional_group_level_name = list(inputId = 'functional_group_level_name', title = 'Functional group values'),
+                  cubication_shape = list(inputId = 'cubication_shape', title = 'Cubication shape'),
+                  special_param = list(inputId = 'special_param', title = 'Special parameter')
+                )
               ),
+              # download buttons
+              shiny::h4('Download allometries table'),
+              shiny::downloadButton('download_allotable_csv', 'csv'),
+              shiny::downloadButton('download_allotable_xlsx', 'xlsx')
+            ),
+            mainPanel = shiny::mainPanel(
+              width = 10,
 
-              # calculate panel
-              shiny::tabPanel(
-                'Calculate',
+              # tabset panel
+              shiny::tabsetPanel(
+                id = 'tabs_panel',
 
-                shiny::fluidRow(
-                  shiny::column(
-                    4,
-                    shiny::p(
-                      'Please, select a file to load with the data to be converted. ',
-                      'Accepted formats are csv and xlsx.',
-                      'Both of them must have a header with columns names.'
-                    ),
-                    shiny::fileInput(
-                      'user_data', NULL, FALSE,
-                      accept = c(
-                        '.csv', '.xlsx', 'text/csv', 'text/comma-separated-values,text/plain',
-                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                        buttonLabel = 'Browse...', placeholder = 'No file selected...'
+                # table tab
+                shiny::tabPanel(
+                  'Table',
+                  DT::DTOutput('allometr_table')
+                ),
+
+                # calculate panel
+                shiny::tabPanel(
+                  'Calculate',
+
+                  shiny::fluidRow(
+                    shiny::column(
+                      3,
+                      shiny::br(),
+                      shinyWidgets::panel(
+                        heading = 'Select the data to convert',
+
+                        # panel contents
+                        shiny::p(
+                          'Please, select a file to load with the data to be converted. ',
+                          'Accepted formats are csv and xlsx.',
+                          'Both of them must have a header with columns names.'
+                        ),
+                        shiny::fileInput(
+                          'user_data', NULL, FALSE,
+                          accept = c(
+                            '.csv', '.xlsx', 'text/csv', 'text/comma-separated-values,text/plain',
+                            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                            buttonLabel = 'Browse...', placeholder = 'No file selected...'
+                          )
+                        ),
+                        shiny::p(
+                          'Select the allometries to use. If in doubt check the ',
+                          shiny::actionLink('link_to_table', 'allometry table')
+                        ),
+                        shinyWidgets::pickerInput(
+                          'allometry_selector', NULL, choices = '', multiple = TRUE,
+                          options = shinyWidgets::pickerOptions(
+                            size = 5, liveSearch = TRUE
+                          )
+                        ),
+                        shiny::p(
+                          'Select the variables from the uploaded data corresponding to the ',
+                          'independent variables from the equation:'
+                        ),
+                        shiny::uiOutput('var_declaration'),
+                        # download buttons
+                        shiny::h4('Download calculated allometries'),
+                        shiny::downloadButton('download_alloresults_csv', 'csv'),
+                        shiny::downloadButton('download_alloresults_xlsx', 'xlsx')
                       )
                     ),
-                    shiny::p(
-                      'Select the allometries to use. If in doubt check the ',
-                      shiny::actionLink('link_to_table', 'allometry table')
-                    ),
-                    shinyWidgets::pickerInput(
-                      'allometry_selector', NULL, choices = '', multiple = TRUE,
-                      options = shinyWidgets::pickerOptions(
-                        size = 5, liveSearch = TRUE
-                      )
-                    ),
-                    shiny::p(
-                      'Select the variables from the uploaded data corresponding to the ',
-                      'independent variables from the equation:'
-                    ),
-                    shiny::uiOutput('var_declaration'),
-                    # download buttons
-                    shiny::h4('Download calculated allometries'),
-                    shiny::downloadButton('download_alloresults_csv', 'csv'),
-                    shiny::downloadButton('download_alloresults_xlsx', 'xlsx')
-                  ),
-                  shiny::column(
-                    8,
-                    shiny::tableOutput('res_data')
+                    shiny::column(
+                      9,
+                      shiny::tableOutput('res_data')
+                    )
                   )
                 )
               )
             )
-          )
-        )
-      )
+          ) # end of sidebar layout
+        ) # end of fluidPage
+      ) # end of tabPanel "Explore"
     ) # end of navbarPage
   )
 
@@ -368,7 +376,6 @@ allometr_app <- function(
 
     calculated_data <- reactive({
 
-      # browser()
 
       shiny::validate(
         shiny::need(user_data(), 'No user data provided'),
@@ -383,6 +390,7 @@ allometr_app <- function(
         shiny::need(allom_variables_exprs(), 'No variables declaration provided'),
         shiny::need(length(allom_variables_exprs()) > 0, 'No variables declaration provided')
       )
+      # browser()
 
       # let's try to do it with glue + parse_exprs because it will be easier I think
       input$allometry_selector %>%
