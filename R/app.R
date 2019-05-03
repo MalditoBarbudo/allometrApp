@@ -120,7 +120,23 @@ allometr_app <- function(
           sidebarPanel = shiny::sidebarPanel(
             width = 3,
             shiny::h4('Filter the allometries'),
-            mod_dataInput('mod_dataInput'),
+            # mod_dataInput('mod_dataInput'),
+            shinyWidgets::selectizeGroupUI(
+              id = 'allometries_filters', inline = FALSE,
+              params = list(
+                dependent_var = list(inputId = 'dependent_var', title = 'Dependent variable'),
+                independent_var_1 = list(inputId = 'independent_var_1', title = 'Independent variable 1'),
+                independent_var_2 = list(inputId = 'independent_var_2', title = 'Independent variable 2'),
+                independent_var_3 = list(inputId = 'independent_var_3', title = 'Independent variable 3'),
+                allometry_level = list(inputId = 'allometry_level', title = 'Allometry levels'),
+                spatial_level = list(inputId = 'spatial_level', title = 'Spatial levels'),
+                spatial_level_name = list(inputId = 'spatial_level_name', title = 'Spatial level values'),
+                functional_group_level = list(inputId = 'functional_group_level', title = 'Functional group'),
+                functional_group_level_name = list(inputId = 'functional_group_level_name', title = 'Functional group values'),
+                cubication_shape = list(inputId = 'cubication_shape', title = 'Cubication shape'),
+                special_param = list(inputId = 'special_param', title = 'Special parameter')
+              )
+            ),
             # download buttons
             shiny::h4('Download allometries table'),
             shiny::downloadButton('download_allotable_csv', 'csv'),
@@ -211,11 +227,22 @@ allometr_app <- function(
     })
 
     ## module calling ####
-    # data inputs
-    data_reactives <- shiny::callModule(
-      mod_data, 'mod_dataInput',
-      allometries_table, variables_thesaurus, cubication_thesaurus, lang
+    alloms_filtered <- shiny::callModule(
+      shinyWidgets::selectizeGroupServer, id = 'allometries_filters',
+      data = allometries_table,
+      vars = c(
+        'dependent_var', 'independent_var_1', 'independent_var_2', 'independent_var_3',
+        'allometry_level', 'spatial_level', 'spatial_level_name', 'functional_group_level',
+        'functional_group_level_name', 'cubication_shape', 'special_param'
+      )
     )
+
+
+    # data inputs
+    # data_reactives <- shiny::callModule(
+    #   mod_data, 'mod_dataInput',
+    #   allometries_table, variables_thesaurus, cubication_thesaurus, lang
+    # )
 
     ## link to table ####
     shiny::observeEvent(
@@ -227,8 +254,7 @@ allometr_app <- function(
 
     ## allo table ####
     output$allometr_table <- DT::renderDT({
-      allometries_table %>%
-        dplyr::filter(!!! data_reactives$filtering_expr) %>%
+      alloms_filtered() %>%
         dplyr::mutate_if(is.numeric, round, 3) %>%
         DT::datatable(
           class = 'compact hover nowrap row-border order-column',
@@ -263,8 +289,7 @@ allometr_app <- function(
     })
 
     observe({
-      id_choices <- allometries_table %>%
-        dplyr::filter(!!! data_reactives$filtering_expr) %>%
+      id_choices <- alloms_filtered() %>%
         dplyr::pull(allometry_id)
 
       updateSelectInput(
@@ -276,7 +301,7 @@ allometr_app <- function(
 
       shiny::validate(
         shiny::need(user_data(), 'No user data provided'),
-        shiny::need(input$allometry_selector, 'No user data provided')
+        shiny::need(input$allometry_selector, 'No allometries selected')
       )
 
       # browser()
@@ -388,8 +413,7 @@ allometr_app <- function(
       },
       content = function(file) {
 
-        data_res <- allometries_table %>%
-          dplyr::filter(!!! data_reactives$filtering_expr)
+        data_res <- alloms_filtered()
 
         readr::write_csv(data_res, file)
       }
@@ -401,8 +425,7 @@ allometr_app <- function(
       },
       content = function(file) {
 
-        data_res <- allometries_table %>%
-          dplyr::filter(!!! data_reactives$filtering_expr)
+        data_res <- alloms_filtered()
 
         writexl::write_xlsx(data_res, file)
       }
