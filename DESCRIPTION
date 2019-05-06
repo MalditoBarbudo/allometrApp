@@ -15,6 +15,7 @@ Imports:
     tidyverse,
     shiny,
     shinyjs,
+    shinyWidgets,
     writexl,
     DT,
     pool,
