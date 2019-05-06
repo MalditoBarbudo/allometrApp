@@ -12,11 +12,9 @@ LazyData: true
 RoxygenNote: 6.1.1
 Imports:
     rmarkdown,
-    flexdashboard,
     tidyverse,
     shiny,
     shinyjs,
-    plotly,
     writexl,
     DT,
     pool,

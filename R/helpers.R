@@ -77,3 +77,10 @@ navbarPageWithInputs <- function(..., inputs) {
   )
   navbar
 }
+
+# translate app function
+translate_app <- function(id, lang, db) {
+  dplyr::tbl(db, 'THESAURUS_APP') %>%
+    dplyr::filter(text_id == id) %>%
+    dplyr::pull(!! rlang::sym(glue::glue("translation_{lang}")))
+}

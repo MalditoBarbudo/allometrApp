@@ -115,103 +115,11 @@ allometr_app <- function(
         #   shiny::textOutput('debug3')
         # ),
         ####################################################### end debug ####
-        shiny::fluidPage(
-          shiny::sidebarLayout(
 
-            sidebarPanel = shiny::sidebarPanel(
-              width = 2,
-              shiny::h4('Filter the allometries'),
-              # mod_dataInput('mod_dataInput'),
-              shinyWidgets::selectizeGroupUI(
-                id = 'allometries_filters', inline = FALSE,
-                params = list(
-                  dependent_var = list(inputId = 'dependent_var', title = 'Dependent variable'),
-                  independent_var_1 = list(inputId = 'independent_var_1', title = 'Independent variable 1'),
-                  independent_var_2 = list(inputId = 'independent_var_2', title = 'Independent variable 2'),
-                  # independent_var_3 = list(inputId = 'independent_var_3', title = 'Independent variable 3'),
-                  allometry_level = list(inputId = 'allometry_level', title = 'Allometry levels'),
-                  spatial_level = list(inputId = 'spatial_level', title = 'Spatial levels'),
-                  spatial_level_name = list(inputId = 'spatial_level_name', title = 'Spatial level values'),
-                  functional_group_level = list(inputId = 'functional_group_level', title = 'Functional group'),
-                  functional_group_level_name = list(inputId = 'functional_group_level_name', title = 'Functional group values'),
-                  cubication_shape = list(inputId = 'cubication_shape', title = 'Cubication shape'),
-                  special_param = list(inputId = 'special_param', title = 'Special parameter')
-                )
-              ),
-              # download buttons
-              shiny::h4('Download allometries table'),
-              shiny::downloadButton('download_allotable_csv', 'csv'),
-              shiny::downloadButton('download_allotable_xlsx', 'xlsx')
-            ),
-            mainPanel = shiny::mainPanel(
-              width = 10,
+        # we need an UI beacuse we need to translate based on the lang input from the
+        # navbar
+        shiny::uiOutput('explore_ui')
 
-              # tabset panel
-              shiny::tabsetPanel(
-                id = 'tabs_panel',
-
-                # table tab
-                shiny::tabPanel(
-                  'Table',
-                  DT::DTOutput('allometr_table')
-                ),
-
-                # calculate panel
-                shiny::tabPanel(
-                  'Calculate',
-
-                  shiny::fluidRow(
-                    shiny::column(
-                      3,
-                      shiny::br(),
-                      shinyWidgets::panel(
-                        heading = 'Select the data to convert',
-
-                        # panel contents
-                        shiny::p(
-                          'Please, select a file to load with the data to be converted. ',
-                          'Accepted formats are csv and xlsx.',
-                          'Both of them must have a header with columns names.'
-                        ),
-                        shiny::fileInput(
-                          'user_data', NULL, FALSE,
-                          accept = c(
-                            '.csv', '.xlsx', 'text/csv', 'text/comma-separated-values,text/plain',
-                            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                            buttonLabel = 'Browse...', placeholder = 'No file selected...'
-                          )
-                        ),
-                        shiny::p(
-                          'Select the allometries to use. If in doubt check the ',
-                          shiny::actionLink('link_to_table', 'allometry table')
-                        ),
-                        shinyWidgets::pickerInput(
-                          'allometry_selector', NULL, choices = '', multiple = TRUE,
-                          options = shinyWidgets::pickerOptions(
-                            size = 5, liveSearch = TRUE
-                          )
-                        ),
-                        shiny::p(
-                          'Select the variables from the uploaded data corresponding to the ',
-                          'independent variables from the equation:'
-                        ),
-                        shiny::uiOutput('var_declaration'),
-                        # download buttons
-                        shiny::h4('Download calculated allometries'),
-                        shiny::downloadButton('download_alloresults_csv', 'csv'),
-                        shiny::downloadButton('download_alloresults_xlsx', 'xlsx')
-                      )
-                    ),
-                    shiny::column(
-                      9,
-                      shiny::tableOutput('res_data')
-                    )
-                  )
-                )
-              )
-            )
-          ) # end of sidebar layout
-        ) # end of fluidPage
       ) # end of tabPanel "Explore"
     ) # end of navbarPage
   )
@@ -232,6 +140,111 @@ allometr_app <- function(
     # lang reactive
     lang <- shiny::reactive({
       input$lang
+    })
+
+    # explore UI (to use lang)
+    output$explore_ui <- shiny::renderUI({
+
+      # lang
+      lang_declared <- lang()
+
+      # proper UI
+      shiny::fluidPage(
+        shiny::sidebarLayout(
+
+          sidebarPanel = shiny::sidebarPanel(
+            width = 2,
+            shiny::h4(translate_app('sidebar_filter_h4', lang_declared, allometr_db)),
+            # mod_dataInput('mod_dataInput'),
+            shinyWidgets::selectizeGroupUI(
+              id = 'allometries_filters', inline = FALSE,
+              params = list(
+                dependent_var = list(inputId = 'dependent_var', title = translate_app('dependent_var', lang_declared, allometr_db)),
+                independent_var_1 = list(inputId = 'independent_var_1', title = translate_app('independent_var_1', lang_declared, allometr_db)),
+                independent_var_2 = list(inputId = 'independent_var_2', title = translate_app('independent_var_2', lang_declared, allometr_db)),
+                # independent_var_3 = list(inputId = 'independent_var_3', title = translate_app# dependent_var', lang_declared, allometr_db)),
+                allometry_level = list(inputId = 'allometry_level', title = translate_app('allometry_level', lang_declared, allometr_db)),
+                spatial_level = list(inputId = 'spatial_level', title = translate_app('spatial_level', lang_declared, allometr_db)),
+                spatial_level_name = list(inputId = 'spatial_level_name', title = translate_app('spatial_level_name', lang_declared, allometr_db)),
+                functional_group_level = list(inputId = 'functional_group_level', title = translate_app('functional_group_level', lang_declared, allometr_db)),
+                functional_group_level_name = list(inputId = 'functional_group_level_name', title = translate_app('functional_group_level_name', lang_declared, allometr_db)),
+                cubication_shape = list(inputId = 'cubication_shape', title = translate_app('cubication_shape', lang_declared, allometr_db)),
+                special_param = list(inputId = 'special_param', title = translate_app('special_param', lang_declared, allometr_db))
+              )
+            ),
+            # download buttons
+            shiny::h4(translate_app('sidebar_download_h4', lang_declared, allometr_db)),
+            shiny::downloadButton('download_allotable_csv', 'csv'),
+            shiny::downloadButton('download_allotable_xlsx', 'xlsx')
+          ),
+          mainPanel = shiny::mainPanel(
+            width = 10,
+
+            # tabset panel
+            shiny::tabsetPanel(
+              id = 'tabs_panel',
+
+              # table tab
+              shiny::tabPanel(
+                translate_app('table_tab_title', lang_declared, allometr_db),
+                DT::DTOutput('allometr_table')
+              ),
+
+              # calculate panel
+              shiny::tabPanel(
+                translate_app('calculate_tab_title', lang_declared, allometr_db),
+
+                shiny::fluidRow(
+                  shiny::column(
+                    3,
+                    shiny::br(),
+                    shinyWidgets::panel(
+                      heading = translate_app('calculate_panel_heading', lang_declared, allometr_db),
+
+                      # panel contents
+                      shiny::p(
+                        translate_app('calculate_panel_upload_p', lang_declared, allometr_db)
+                      ),
+                      shiny::fileInput(
+                        'user_data', NULL, FALSE,
+                        accept = c(
+                          '.csv', '.xlsx', 'text/csv', 'text/comma-separated-values,text/plain',
+                          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                        ),
+                        buttonLabel = translate_app('user_data_button_label', lang_declared, allometr_db),
+                        placeholder = translate_app('user_data_button_placeholder', lang_declared, allometr_db)
+                      ),
+                      shiny::p(
+                        translate_app('calculate_panel_allosel_p', lang_declared, allometr_db),
+                        shiny::actionLink('link_to_table', translate_app('calculate_panel_allotable_link', lang_declared, allometr_db))
+                      ),
+                      shinyWidgets::pickerInput(
+                        'allometry_selector', NULL, choices = '', multiple = TRUE,
+                        options = shinyWidgets::pickerOptions(
+                          size = 5, liveSearch = TRUE,
+                          noneSelectedText = translate_app('nothing_selected', lang_declared, allometr_db)
+                        )
+                      ),
+                      shiny::p(
+                        translate_app('calculate_panel_vardec_p', lang_declared, allometr_db)
+                      ),
+                      shiny::uiOutput('var_declaration'),
+                      # download buttons
+                      shiny::h4(translate_app('calculate_panel_download_h4', lang_declared, allometr_db)),
+                      shiny::downloadButton('download_alloresults_csv', 'csv'),
+                      shiny::downloadButton('download_alloresults_xlsx', 'xlsx')
+                    )
+                  ),
+                  shiny::column(
+                    9,
+                    shiny::tableOutput('res_data')
+                  )
+                )
+              )
+            )
+          )
+        ) # end of sidebar layout
+      ) # end of fluidPage
     })
 
     ## module calling ####
@@ -308,8 +321,8 @@ allometr_app <- function(
     output$var_declaration <- renderUI({
 
       shiny::validate(
-        shiny::need(user_data(), 'No user data provided'),
-        shiny::need(input$allometry_selector, 'No allometries selected')
+        shiny::need(user_data(), translate_app('need_user_data', lang(), allometr_db)),
+        shiny::need(input$allometry_selector, translate_app('need_allosel', lang(), allometr_db))
       )
 
       # browser()
@@ -364,7 +377,7 @@ allometr_app <- function(
       independent_vars %>%
         purrr::walk(
           ~ shiny::validate(
-            shiny::need(input[[paste0(.x, '_input')]], 'No variable declaration')
+            shiny::need(input[[paste0(.x, '_input')]], translate_app('need_vardec', lang(), allometr_db))
           )
         ) %>%
         purrr::map_chr(
@@ -378,8 +391,8 @@ allometr_app <- function(
 
 
       shiny::validate(
-        shiny::need(user_data(), 'No user data provided'),
-        shiny::need(input$allometry_selector, 'No allometries selected')
+        shiny::need(user_data(), translate_app('need_user_data', lang(), allometr_db)),
+        shiny::need(input$allometry_selector, translate_app('need_allosel', lang(), allometr_db))
 
         # shiny::need(
         #   !is.character(user_data()[['']])
@@ -387,8 +400,8 @@ allometr_app <- function(
       )
 
       shiny::validate(
-        shiny::need(allom_variables_exprs(), 'No variables declaration provided'),
-        shiny::need(length(allom_variables_exprs()) > 0, 'No variables declaration provided')
+        shiny::need(allom_variables_exprs(), translate_app('need_vardec', lang(), allometr_db)),
+        shiny::need(length(allom_variables_exprs()) > 0, translate_app('need_vardec', lang(), allometr_db))
       )
       # browser()
 
