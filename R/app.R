@@ -137,12 +137,12 @@ allometr_app <- function(
     #   map_reactives$map_shape_click
     # })
 
-    # lang reactive
+    ## lang reactive ####
     lang <- shiny::reactive({
       input$lang
     })
 
-    # explore UI (to use lang)
+    ## explore UI (to use lang) ####
     output$explore_ui <- shiny::renderUI({
 
       # lang
@@ -275,9 +275,15 @@ allometr_app <- function(
     )
 
     ## allo table ####
+    # TODO change table headers to the lang
     output$allometr_table <- DT::renderDT({
+      lang_declared <- lang()
+
       alloms_filtered() %>%
         dplyr::mutate_if(is.numeric, round, 3) %>%
+        magrittr::set_colnames(
+          translate_app(names(.), lang_declared, allometr_db)
+        ) %>%
         DT::datatable(
           class = 'compact hover nowrap row-border order-column',
           extensions = 'Scroller',
