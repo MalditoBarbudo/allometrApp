@@ -156,7 +156,7 @@ allometr_app <- function(
             width = 2,
             shiny::h4(translate_app('sidebar_filter_h4', lang_declared, allometr_db)),
             # mod_dataInput('mod_dataInput'),
-            shinyWidgets::selectizeGroupUI(
+            selectizeGroupUI_custom(
               id = 'allometries_filters', inline = FALSE,
               params = list(
                 dependent_var = list(inputId = 'dependent_var', title = translate_app('dependent_var', lang_declared, allometr_db)),
@@ -249,13 +249,14 @@ allometr_app <- function(
 
     ## module calling ####
     alloms_filtered <- shiny::callModule(
-      shinyWidgets::selectizeGroupServer, id = 'allometries_filters',
+      selectizeGroupServer_custom, id = 'allometries_filters',
       data = allometries_table,
       vars = c(
         'dependent_var', 'independent_var_1', 'independent_var_2', #'independent_var_3',
         'allometry_level', 'spatial_level', 'spatial_level_name', 'functional_group_level',
         'functional_group_level_name', 'cubication_shape', 'special_param'
-      )
+      ),
+      lang = lang, db = allometr_db
     )
 
 
@@ -349,8 +350,13 @@ allometr_app <- function(
       #   purrr::discard(function(x) {is.na(x)})
 
       lapply(independent_vars, function(x) {
+
+        units <- variables_thesaurus %>%
+          dplyr::filter(var_id == x) %>%
+          dplyr::pull(var_units)
+
         shinyWidgets::pickerInput(
-          glue::glue("{x}_input"), glue::glue("Variable acting as {x}"),
+          glue::glue("{x}_input"), glue::glue(translate_app('calculate_panel_vardec_inputs', lang(), allometr_db)),
           choices = user_data() %>% dplyr::select_if(is.numeric) %>% names()
         )
       })
