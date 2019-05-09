@@ -420,7 +420,9 @@ allometr_app <- function(
                    {paste0(allom_variables_exprs(), sep = ' ')}
                    allometry_id = '{.x}',
                    # name = '{allom_description(id = .x)[[.x]]$dependent_var}'
-                   name = '{.x}'
+                   name = '{.x} [{variables_thesaurus %>%
+                                  dplyr::filter(var_id == stringr::str_split(.x, '_') %>% purrr::flatten_chr() %>% magrittr::extract(1)) %>%
+                                  dplyr::pull(var_units)}]'
                  )"
           )
         ) %>%
