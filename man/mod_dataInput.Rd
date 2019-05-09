@@ -4,11 +4,21 @@
 \alias{mod_dataInput}
 \title{mod_dataInput and mod_data}
 \usage{
-mod_dataInput(id)
+mod_dataInput(id, params, label = NULL,
+  btn_label = "Restableix els filtres", inline = TRUE)
 }
 \arguments{
 \item{id}{shiny id}
+
+\item{params}{list with params}
+
+\item{label}{label}
+
+\item{btn_label}{button label}
+
+\item{inline}{logical}
 }
 \description{
-A shiny module to create and populate the data inputs
+A shiny module to create and populate the data inputs, linked between them.
+  It is based on shinyWidgets::selectizeGroupUI module, but adapted to our case
 }

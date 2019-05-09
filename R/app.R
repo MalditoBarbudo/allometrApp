@@ -155,8 +155,7 @@ allometr_app <- function(
           sidebarPanel = shiny::sidebarPanel(
             width = 2,
             shiny::h4(translate_app('sidebar_filter_h4', lang_declared, allometr_db)),
-            # mod_dataInput('mod_dataInput'),
-            selectizeGroupUI_custom(
+            mod_dataInput(
               id = 'allometries_filters', inline = FALSE,
               params = list(
                 dependent_var = list(inputId = 'dependent_var', title = translate_app('dependent_var', lang_declared, allometr_db)),
@@ -249,34 +248,29 @@ allometr_app <- function(
 
     ## module calling ####
     alloms_filtered <- shiny::callModule(
-      selectizeGroupServer_custom, id = 'allometries_filters',
-      data = allometries_table,
+      mod_data, id = 'allometries_filters', data = allometries_table,
+      lang = lang, db = allometr_db,
       vars = c(
         'dependent_var', 'independent_var_1', 'independent_var_2', #'independent_var_3',
         'allometry_level', 'spatial_level', 'spatial_level_name', 'functional_group_level',
         'functional_group_level_name', 'cubication_shape', 'special_param'
-      ),
-      lang = lang, db = allometr_db
+      )
     )
-
-
-    # data inputs
-    # data_reactives <- shiny::callModule(
-    #   mod_data, 'mod_dataInput',
-    #   allometries_table, variables_thesaurus, cubication_thesaurus, lang
-    # )
 
     ## link to table ####
     shiny::observeEvent(
       input$link_to_table,
       {
-        shiny::updateTabsetPanel(session, 'tabs_panel', 'Table')
+        shiny::updateTabsetPanel(
+          session, 'tabs_panel', translate_app('table_tab_title', lang(), allometr_db)
+        )
       }
     )
 
     ## allo table ####
     # TODO change table headers to the lang
     output$allometr_table <- DT::renderDT({
+
       lang_declared <- lang()
 
       alloms_filtered() %>%
