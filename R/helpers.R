@@ -58,6 +58,7 @@ eq_formatter <- function(eq) {
   eq_res <- stringr::str_replace(eq_res, '\\ba\\b', 'param_a')
   eq_res <- stringr::str_replace(eq_res, '\\bb\\b', 'param_b')
   eq_res <- stringr::str_replace(eq_res, '\\bc\\b', 'param_c')
+  eq_res <- stringr::str_replace(eq_res, '\\bd\\b', 'param_d')
 
   return(eq_res)
 

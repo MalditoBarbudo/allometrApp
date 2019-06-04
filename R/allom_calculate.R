@@ -60,6 +60,7 @@ allom_calculate <- function(
   param_a <- allo_desc[[allometry_id]][['param_a']]
   param_b <- allo_desc[[allometry_id]][['param_b']]
   param_c <- allo_desc[[allometry_id]][['param_c']]
+  param_d <- allo_desc[[allometry_id]][['param_d']]
 
   data %>%
     dplyr::mutate(
