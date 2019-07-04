@@ -326,8 +326,6 @@ allometr_app <- function(
         shiny::need(input$allometry_selector, translate_app('need_allosel', lang(), allometr_db))
       )
 
-      # browser()
-
       allom_id <- input$allometry_selector
       allom_desc <- allom_description(id = allom_id)
 
