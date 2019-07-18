@@ -253,6 +253,7 @@ mod_data <- function(
 
   # finally a reactive to return the data after all the multiple filters
   data_res <- shiny::reactive({
+
     indicator <- purrr::map(vars, function(x) {
       data[[x]] %inT% input[[x]]
     }) %>%

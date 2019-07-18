@@ -43,10 +43,10 @@ allometr_app <- function(
   )
 
   ### Variables names inter ####################################################
-  allometries_table <- dplyr::tbl(allometr_db, tolower('ALLOMETRIES')) %>%
-    dplyr::collect()
-  variables_thesaurus <- dplyr::tbl(allometr_db, tolower('THESAURUS_VARIABLES')) %>%
-    dplyr::collect()
+  # allometries_table <- dplyr::tbl(allometr_db, tolower('ALLOMETRIES')) %>%
+  #   dplyr::collect()
+  # variables_thesaurus <- dplyr::tbl(allometr_db, tolower('THESAURUS_VARIABLES')) %>%
+  #   dplyr::collect()
   cubication_thesaurus <- dplyr::tbl(allometr_db, tolower('THESAURUS_CUBICATION')) %>%
     dplyr::collect()
 
