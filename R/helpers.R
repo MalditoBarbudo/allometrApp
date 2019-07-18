@@ -82,7 +82,7 @@ navbarPageWithInputs <- function(..., inputs) {
 # translate app function
 translate_app <- function(id, lang, db) {
 
-  thesaurus <- dplyr::tbl(db, 'THESAURUS_APP') %>%
+  thesaurus <- dplyr::tbl(db, tolower('THESAURUS_APP')) %>%
     dplyr::collect()
 
   id %>%
@@ -98,7 +98,7 @@ translate_app <- function(id, lang, db) {
         }
     )
 
-  # dplyr::tbl(db, 'THESAURUS_APP') %>%
+  # dplyr::tbl(db, tolower('THESAURUS_APP')) %>%
   #   dplyr::filter(text_id %in% id) %>%
   #   dplyr::arrange(text_id) %>%
   #   dplyr::pull(!! rlang::sym(glue::glue("translation_{lang}")))
@@ -106,7 +106,7 @@ translate_app <- function(id, lang, db) {
 
 # variables description table
 variables_description <- function(lang, db) {
-  dplyr::tbl(db, 'THESAURUS_VARIABLES') %>%
+  dplyr::tbl(db, tolower('THESAURUS_VARIABLES')) %>%
     dplyr::select(var_id, dplyr::contains(glue::glue('translation_{lang}')), var_units) %>%
     dplyr::collect()
 }
