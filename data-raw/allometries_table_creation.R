@@ -15,25 +15,25 @@ allometries_table <- dplyr::tbl(allometr_db, tolower('ALLOMETRIES')) %>%
   dplyr::collect() %>%
   # dependent var
   dplyr::left_join(
-    variables_thesaurus %>% select(var_id, var_units, dplyr::starts_with('translation')),
+    variables_thesaurus %>% dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
     by = c("dependent_var" = "var_id"),
     suffix = c("", "_dependent")
   ) %>%
   # independent_var_1
   dplyr::left_join(
-    variables_thesaurus %>% select(var_id, var_units, dplyr::starts_with('translation')),
+    variables_thesaurus %>% dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
     by = c("independent_var_1" = "var_id"),
     suffix = c("", "_independent_1")
   ) %>%
   # independent_var_2
   dplyr::left_join(
-    variables_thesaurus %>% select(var_id, var_units, dplyr::starts_with('translation')),
+    variables_thesaurus %>% dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
     by = c("independent_var_2" = "var_id"),
     suffix = c("", "_independent_2")
   ) %>%
   # independent_var_3
   dplyr::left_join(
-    variables_thesaurus %>% select(var_id, var_units, dplyr::starts_with('translation')),
+    variables_thesaurus %>% dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
     by = c("independent_var_3" = "var_id"),
     suffix = c("", "_independent_3")
   ) %>%
@@ -62,5 +62,5 @@ pool::poolClose(allometr_db)
 
 # use_data
 usethis::use_data(
-  allometries_table, internal = TRUE, overwrite = TRUE
+  allometries_table, internal = FALSE, overwrite = TRUE
 )
