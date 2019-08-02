@@ -4,7 +4,7 @@ allometr_db <- pool::dbPool(
   user = 'guest',
   password = 'guest',
   dbname = 'allometr_db',
-  host = 'localhost'
+  host = '158.109.46.23'
 )
 
 # tables
@@ -62,5 +62,5 @@ pool::poolClose(allometr_db)
 
 # use_data
 usethis::use_data(
-  allometries_table, internal = FALSE, overwrite = TRUE
+  allometries_table, variables_thesaurus, internal = FALSE, overwrite = TRUE
 )
