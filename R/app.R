@@ -462,7 +462,7 @@ allometr_app <- function(
     ## download res table ####
     output$download_alloresults_csv <- downloadHandler(
       filename = function() {
-        paste("calculated_allometry", Sys.Date(), '.csv', sep = '')
+        paste("calculated_allometries_", Sys.Date(), '.csv', sep = '')
       },
       content = function(file) {
 
@@ -474,7 +474,7 @@ allometr_app <- function(
 
     output$download_alloresults_xlsx <- downloadHandler(
       filename = function() {
-        paste("calculated_allometry", Sys.Date(), '.xlsx', sep = '')
+        paste("calculated_allometries_", Sys.Date(), '.xlsx', sep = '')
       },
       content = function(file) {
 
