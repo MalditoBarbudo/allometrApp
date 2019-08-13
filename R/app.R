@@ -351,7 +351,7 @@ allometr_app <- function(
 
       lapply(independent_vars, function(x) {
 
-        units <- variables_thesaurus %>%
+        units <- allometrApp::variables_thesaurus %>%
           dplyr::filter(var_id == x) %>%
           dplyr::pull(var_units)
 
@@ -419,7 +419,7 @@ allometr_app <- function(
                    {paste0(allom_variables_exprs(), sep = ' ')}
                    allometry_id = '{.x}',
                    # name = '{allom_description(id = .x)[[.x]]$dependent_var}'
-                   name = '{.x} [{variables_thesaurus %>%
+                   name = '{.x} [{allometrApp::variables_thesaurus %>%
                                   dplyr::filter(var_id == stringr::str_split(.x, '_') %>% purrr::flatten_chr() %>% magrittr::extract(1)) %>%
                                   dplyr::pull(var_units)}]'
                  )"
