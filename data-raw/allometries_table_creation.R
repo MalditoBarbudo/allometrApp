@@ -4,7 +4,8 @@ allometr_db <- pool::dbPool(
   user = 'guest',
   password = 'guest',
   dbname = 'allometr_db',
-  host = '158.109.46.23'
+  host = '158.109.46.23',
+  port = 5433
 )
 
 # tables

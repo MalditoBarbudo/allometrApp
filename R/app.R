@@ -49,6 +49,8 @@ allometr_app <- function(
   #   dplyr::collect()
   cubication_thesaurus <- dplyr::tbl(allometr_db, tolower('THESAURUS_CUBICATION')) %>%
     dplyr::collect()
+  # data("allometries_table")
+  # data("variables_thesaurus")
 
   ### Language input ###########################################################
   shiny::addResourcePath(
@@ -248,7 +250,7 @@ allometr_app <- function(
 
     ## module calling ####
     alloms_filtered <- shiny::callModule(
-      mod_data, id = 'allometries_filters', data = allometries_table,
+      mod_data, id = 'allometries_filters', data = allometrApp::allometries_table,
       lang = lang, db = allometr_db,
       vars = c(
         'dependent_var', 'independent_var_1', 'independent_var_2', #'independent_var_3',
@@ -407,7 +409,6 @@ allometr_app <- function(
         shiny::need(allom_variables_exprs(), translate_app('need_vardec', lang(), allometr_db)),
         shiny::need(length(allom_variables_exprs()) > 0, translate_app('need_vardec', lang(), allometr_db))
       )
-      # browser()
 
       # let's try to do it with glue + parse_exprs because it will be easier I think
       input$allometry_selector %>%

@@ -29,12 +29,12 @@ allom_description <- function(..., id = NULL) {
   dots_expressions <- rlang::quos(...)
 
   if (is.null(id)) {
-    res <- allometries_table %>%
+    res <- allometrApp::allometries_table %>%
       dplyr::filter(!!! dots_expressions) %>%
       split(.$allometry_id) %>%
       purrr::map(~ rlang::as_list(.x))
   } else {
-    res <- allometries_table %>%
+    res <- allometrApp::allometries_table %>%
       dplyr::filter(allometry_id %in% id) %>%
       split(.$allometry_id) %>%
       purrr::map(~ rlang::as_list(.x))
@@ -54,6 +54,7 @@ eq_formatter <- function(eq) {
   eq_res <- stringr::str_replace_all(eq_res, '·', '*')
   # ² to ^2
   eq_res <- stringr::str_replace_all(eq_res, '²', '^2')
+  eq_res <- stringr::str_replace_all(eq_res, '³', '^3')
   # params
   eq_res <- stringr::str_replace(eq_res, '\\ba\\b', 'param_a')
   eq_res <- stringr::str_replace(eq_res, '\\bb\\b', 'param_b')
