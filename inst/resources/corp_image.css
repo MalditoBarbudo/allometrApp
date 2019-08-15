@@ -194,7 +194,7 @@ table.dataTable tr:nth-child(even) {
 table.dataTable tr:nth-child(odd) {
   background-color: var(--main-bg-color) !important;
 }
-table.dataTable td.selected {
+table.dataTable tr.selected td, table.dataTable td.selected {
   background-color: var(--main-selected-color) !important;
   color: var(--main-bg-color) !important;
   border-style: hidden;
