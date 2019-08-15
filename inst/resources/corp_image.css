@@ -11,6 +11,7 @@ uniformize the apps style
 
 :root {
   --main-bg-color: #c8cac8;
+  --secondary-bg-color: #d8dad8;
   --main-dark-color: #001629;
   --main-selected-color: #448714;
   --main-not-focused-color: #647a8d;
@@ -185,3 +186,16 @@ input.form-control {
   background-color: var(--main-selected-color);
   color: var(--main-bg-color);
 }
+
+/* DT */
+table.dataTable tr:nth-child(even) {
+  background-color: var(--secondary-bg-color) !important;
+}
+table.dataTable tr:nth-child(odd) {
+  background-color: var(--main-bg-color) !important;
+}
+/*
+table.dataTable th {
+  background-color: white !important;
+}
+/*
