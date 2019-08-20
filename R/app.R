@@ -76,6 +76,10 @@ allometr_app <- function(
       # custom css
       shiny::includeCSS(
         system.file('resources', 'allometrapp.css', package = 'allometrApp')
+      ),
+      # corporate image css
+      shiny::includeCSS(
+        system.file('resources', 'corp_image.css', package = 'allometrApp')
       )
     ),
 
