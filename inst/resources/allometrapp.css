@@ -17,23 +17,3 @@ div.table_container {
   z-index: 1500;
 }
 
-/* language selector */
-.navbar-form {
-  margin-top: 8px;
-  margin-bottom: 0px;
-}
-
-.navbar-form > .form-group {
-  position: absolute;
-  right: 25px;
-}
-
-.flag-lang {
-  display: inline;
-  vertical-align: middle;
-  padding-left: 10px;
-}
-
-.flag-image {
-  border-radius: 50%;
-}
