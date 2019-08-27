@@ -19,12 +19,12 @@ div.table_container {
 
 /* language selector */
 .navbar-form {
-  margin-top: 5px;
+  margin-top: 8px;
   margin-bottom: 0px;
 }
 
 .navbar-form > .form-group {
-  position: fixed;
+  position: absolute;
   right: 25px;
 }
 
