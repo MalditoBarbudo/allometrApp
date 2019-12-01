@@ -320,8 +320,8 @@ allometr_app <- function(
       id_choices <- alloms_filtered() %>%
         dplyr::pull(allometry_id)
 
-      updateSelectInput(
-        session, 'allometry_selector', NULL, id_choices
+      shinyWidgets::updatePickerInput(
+        session, 'allometry_selector', NULL, choices = id_choices
       )
     })
 
