@@ -18,7 +18,6 @@ Imports:
     shinyWidgets,
     writexl,
     DT,
-    pool,
     rlang,
     lfcdata (>= 0.0.4)
 Remotes:  
