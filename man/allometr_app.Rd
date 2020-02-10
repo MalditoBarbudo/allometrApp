@@ -4,8 +4,7 @@
 \alias{allometr_app}
 \title{function to launch the allometr app}
 \usage{
-allometr_app(user = "guest", password = "guest", host = NULL,
-  port = NULL, dbname = "allometr_db")
+allometr_app()
 }
 \description{
 function to launch the allometr app

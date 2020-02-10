@@ -62,6 +62,6 @@ allometries_table <- dplyr::tbl(allometr_db, tolower('ALLOMETRIES')) %>%
 pool::poolClose(allometr_db)
 
 # use_data
-usethis::use_data(
-  allometries_table, variables_thesaurus, internal = FALSE, overwrite = TRUE
-)
+# usethis::use_data(
+#   allometries_table, variables_thesaurus, internal = FALSE, overwrite = TRUE
+# )

@@ -19,4 +19,7 @@ Imports:
     writexl,
     DT,
     pool,
-    rlang
+    rlang,
+    lfcdata (>= 0.0.4)
+Remotes:  
+    MalditoBarbudo/lfcdata
