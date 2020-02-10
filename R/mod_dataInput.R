@@ -47,23 +47,6 @@ mod_dataInput <- function(
             return(tagSelect)
           }
         )
-        # lapply(seq_along(params), function(x) {
-        #   input <- params[[x]]
-        #   tagSelect <- shiny::div(
-        #     class = 'btn-group',
-        #     shiny::selectizeInput(
-        #       inputId = ns(input$inputId),
-        #       label = input$title, choices = input$choices,
-        #       selected = input$selected, multiple = TRUE, width = "100%",
-        #       options = list(
-        #         placeholder = input$placeholder,
-        #         plugins = list("remove_button"),
-        #         onInitialize = I("function() { this.setValue(\"\"); }")
-        #       )
-        #     )
-        #   )
-        #   return(tagSelect)
-        # })
       ),
       shiny::actionLink(
         ns("reset_all"), label = btn_label, icon = shiny::icon("remove"),
@@ -89,18 +72,6 @@ mod_dataInput <- function(
           return(tagSelect)
         }
       ),
-      # lapply(seq_along(params), function(x) {
-      #   input <- params[[x]]
-      #   tagSelect <- shiny::selectizeInput(
-      #     ns(input$inputId), label = input$title, choices = input$choices,
-      #     selected = input$selected, multiple = TRUE, width = "100%",
-      #     options = list(
-      #       placeholder = input$placeholder, plugins = list("remove_button"),
-      #       onInitialize = I("function() { this.setValue(\"\"); }")
-      #     )
-      #   )
-      #   return(tagSelect)
-      # }),
       shiny::actionLink(
         ns("reset_all"), label = btn_label, icon = shiny::icon("remove"),
         style = "float; right;"
