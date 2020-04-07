@@ -1,27 +1,3 @@
-# #' function to launch the nfi app
-# #'
-# #' @param file character indicating the flexdashboard Rmd file to load
-# #' @param shiny_args list with the shiny arguments for runApp
-# #' @param render_params list of named parameters for the Rmd file
-# #'
-# #' @export
-# allometr_app <- function(
-#   file,
-#   shiny_args = list(host = '0.0.0.0', port = 3838),
-#   render_params =  list(
-#     appdb_user = 'guest',
-#     appdb_password = 'guest',
-#     appdb_dbname = 'allometr_db',
-#     appdb_host = 'localhost'
-#   )
-# ) {
-#
-#   # wrapper for rmarkdown::run with the corresponding arguments
-#   rmarkdown::run(
-#     file = file, shiny_args = shiny_args, render_args = list(params = render_params)
-#   )
-# }
-
 #' function to launch the allometr app
 #'
 #' @importFrom magrittr %>%
@@ -31,15 +7,6 @@ allometr_app <- function() {
 
   ### DB access ################################################################
   allomdb <- lfcdata::allometries()
-
-  # allometr_db <- pool::dbPool(
-  #   RPostgreSQL::PostgreSQL(),
-  #   user = user,
-  #   password = password,
-  #   dbname = dbname,
-  #   host = host,
-  #   port = port
-  # )
 
   ### Variables names inter ####################################################
   cubication_thesaurus <- allomdb$get_data('thesaurus_cubication')
@@ -198,7 +165,7 @@ allometr_app <- function() {
         shiny::sidebarLayout(
 
           sidebarPanel = shiny::sidebarPanel(
-            width = 2,
+            width = 3,
             shiny::h4(translate_app('sidebar_filter_h4', lang_declared, allomdb)),
             mod_dataInput(
               id = 'allometries_filters', inline = FALSE,
@@ -222,7 +189,7 @@ allometr_app <- function() {
             shiny::downloadButton('download_allotable_xlsx', 'xlsx')
           ),
           mainPanel = shiny::mainPanel(
-            width = 10,
+            width = 9,
 
             # tabset panel
             shiny::tabsetPanel(
