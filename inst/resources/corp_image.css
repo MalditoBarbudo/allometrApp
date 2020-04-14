@@ -9,6 +9,8 @@ uniformize the apps style
 
 */
 
+/* CREAF / CTFC colors */
+/*
 :root {
   --main-bg-color: #c8cac8;
   --main-dark-color: #001629;
@@ -16,6 +18,16 @@ uniformize the apps style
   --main-not-focused-color: #647a8d;
   --main-button-color: #15351e;
   --main-button-hover-color: #76f7a7
+}
+*/
+/* modified from https://www.schemecolor.com/rocky-cliff-color-scheme.php */
+:root {
+  --main-bg-color: #E8EAEB;
+  --main-dark-color: #1C1C20;
+  --main-selected-color: #83A24E;
+  --main-not-focused-color: #606064;
+  --main-button-color: #606064;
+  --main-button-hover-color: #83A24E;
 }
 
 /* language selector */
