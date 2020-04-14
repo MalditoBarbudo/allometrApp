@@ -79,13 +79,13 @@ allometr_app <- function() {
 
     # css
     shiny::tags$head(
-      # custom css
-      shiny::includeCSS(
-        system.file('resources', 'allometrapp.css', package = 'allometrApp')
-      ),
       # corporate image css
       shiny::includeCSS(
         system.file('resources', 'corp_image.css', package = 'allometrApp')
+      ),
+      # custom css
+      shiny::includeCSS(
+        system.file('resources', 'allometrapp.css', package = 'allometrApp')
       )
     ),
 
