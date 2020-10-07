@@ -5,61 +5,6 @@
 #' @export
 allometr_app <- function() {
 
-  ### DB access ################################################################
-  allomdb <- lfcdata::allometries()
-
-  ### Variables names inter ####################################################
-  cubication_thesaurus <- allomdb$get_data('thesaurus_cubication')
-  variables_thesaurus <- allomdb$get_data('thesaurus_variables')
-  allometries_table <-
-    allomdb$get_data('allometries') %>%
-    # dependent var
-    dplyr::left_join(
-      variables_thesaurus %>%
-        dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
-      by = c("dependent_var" = "var_id"),
-      suffix = c("", "_dependent")
-    ) %>%
-    # independent_var_1
-    dplyr::left_join(
-      variables_thesaurus %>%
-        dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
-      by = c("independent_var_1" = "var_id"),
-      suffix = c("", "_independent_1")
-    ) %>%
-    # independent_var_2
-    dplyr::left_join(
-      variables_thesaurus %>%
-        dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
-      by = c("independent_var_2" = "var_id"),
-      suffix = c("", "_independent_2")
-    ) %>%
-    # independent_var_3
-    dplyr::left_join(
-      variables_thesaurus %>%
-        dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
-      by = c("independent_var_3" = "var_id"),
-      suffix = c("", "_independent_3")
-    ) %>%
-    dplyr::rename(
-      dependent_var_units = var_units,
-      dependent_var_translation_cat = translation_cat,
-      dependent_var_translation_spa = translation_spa,
-      dependent_var_translation_eng = translation_eng,
-      independent_var_1_units = var_units_independent_1,
-      independent_var_1_translation_cat = translation_cat_independent_1,
-      independent_var_1_translation_spa = translation_spa_independent_1,
-      independent_var_1_translation_eng = translation_eng_independent_1,
-      independent_var_2_units = var_units_independent_2,
-      independent_var_2_translation_cat = translation_cat_independent_2,
-      independent_var_2_translation_spa = translation_spa_independent_2,
-      independent_var_2_translation_eng = translation_eng_independent_2,
-      independent_var_3_units = var_units_independent_3,
-      independent_var_3_translation_cat = translation_cat_independent_3,
-      independent_var_3_translation_spa = translation_spa_independent_3,
-      independent_var_3_translation_eng = translation_eng_independent_3
-    )
-
   ### Language input ###########################################################
   shiny::addResourcePath(
     'images', system.file('resources', 'images', package = 'allometrApp')
@@ -76,6 +21,21 @@ allometr_app <- function() {
 
     # shinyjs
     shinyjs::useShinyjs(),
+
+    # waiter/hostess
+    waiter::use_waiter(),
+    waiter::use_hostess(),
+    # show waiter on load
+    waiter::waiter_show_on_load(
+      color = '#E8EAEB',
+      html = waiter::hostess_loader(
+        "loader",
+        svg = 'images/hostess_image.svg',
+        progress_type = 'fill',
+        fill_direction = 'btt',
+        center_page = TRUE
+      )
+    ),
 
     # css
     shiny::tags$head(
@@ -153,6 +113,67 @@ allometr_app <- function() {
     lang <- shiny::reactive({
       input$lang
     })
+
+    # hostess init
+    hostess_init <- waiter::Hostess$new('loader', infinite = TRUE)
+    hostess_init$start()
+
+    ### DB access ################################################################
+    allomdb <- lfcdata::allometries()
+
+    ### Variables names inter ####################################################
+    cubication_thesaurus <- allomdb$get_data('thesaurus_cubication')
+    variables_thesaurus <- allomdb$get_data('thesaurus_variables')
+    allometries_table <-
+      allomdb$get_data('allometries') %>%
+      # dependent var
+      dplyr::left_join(
+        variables_thesaurus %>%
+          dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
+        by = c("dependent_var" = "var_id"),
+        suffix = c("", "_dependent")
+      ) %>%
+      # independent_var_1
+      dplyr::left_join(
+        variables_thesaurus %>%
+          dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
+        by = c("independent_var_1" = "var_id"),
+        suffix = c("", "_independent_1")
+      ) %>%
+      # independent_var_2
+      dplyr::left_join(
+        variables_thesaurus %>%
+          dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
+        by = c("independent_var_2" = "var_id"),
+        suffix = c("", "_independent_2")
+      ) %>%
+      # independent_var_3
+      dplyr::left_join(
+        variables_thesaurus %>%
+          dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
+        by = c("independent_var_3" = "var_id"),
+        suffix = c("", "_independent_3")
+      ) %>%
+      dplyr::rename(
+        dependent_var_units = var_units,
+        dependent_var_translation_cat = translation_cat,
+        dependent_var_translation_spa = translation_spa,
+        dependent_var_translation_eng = translation_eng,
+        independent_var_1_units = var_units_independent_1,
+        independent_var_1_translation_cat = translation_cat_independent_1,
+        independent_var_1_translation_spa = translation_spa_independent_1,
+        independent_var_1_translation_eng = translation_eng_independent_1,
+        independent_var_2_units = var_units_independent_2,
+        independent_var_2_translation_cat = translation_cat_independent_2,
+        independent_var_2_translation_spa = translation_spa_independent_2,
+        independent_var_2_translation_eng = translation_eng_independent_2,
+        independent_var_3_units = var_units_independent_3,
+        independent_var_3_translation_cat = translation_cat_independent_3,
+        independent_var_3_translation_spa = translation_spa_independent_3,
+        independent_var_3_translation_eng = translation_eng_independent_3
+      )
+
+
 
     ## explore UI (to use lang) ####
     output$explore_ui <- shiny::renderUI({
@@ -484,6 +505,10 @@ allometr_app <- function() {
         writexl::write_xlsx(data_res, file)
       }
     )
+
+    # close init
+    hostess_init$close()
+    waiter::waiter_hide()
 
   } # end of server function
 
