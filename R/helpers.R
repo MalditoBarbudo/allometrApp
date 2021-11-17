@@ -7,8 +7,8 @@ navbarPageWithInputs <- function(..., inputs) {
 
   # browser()
 
-  navbar[[3]][[1]]$children[[1]]$children[[2]] <- htmltools::tagAppendChild(
-    navbar[[3]][[1]]$children[[1]]$children[[2]], form
+  navbar[[4]][[1]][[1]]$children[[1]]$children[[2]] <- htmltools::tagAppendChild(
+    navbar[[4]][[1]][[1]]$children[[1]]$children[[2]], form
   )
   navbar
 }
