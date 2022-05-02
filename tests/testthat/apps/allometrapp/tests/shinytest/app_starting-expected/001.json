@@ -1,0 +1,163 @@
+{
+  "input": {
+    "alive_count": 0,
+    "lang": "cat",
+    "nav": "Explore"
+  },
+  "output": {
+    "explore_ui": {
+      "html": "<div class=\"container-fluid\">\n  <div class=\"row\">\n    <div class=\"col-sm-3\">\n      <form class=\"well\" role=\"complementary\">\n        <h4>Filtra les al·lometries<\/h4>\n        <!--SHINY.SINGLETON[2d78254b60e191182da6f05a1023c7ec0fc8814a]-->\n        <link rel=\"stylesheet\" type=\"text/css\" href=\"shinyWidgets/modules/style-modules.css\"/>\n        <script>Shiny.addCustomMessageHandler('toggleDisplay',\nfunction(data) {\n$('#' + data.id).css('display', data.display);\n});<\/script>\n        <!--/SHINY.SINGLETON[2d78254b60e191182da6f05a1023c7ec0fc8814a]-->\n        <b><\/b>\n        <div class=\"form-group shiny-input-container\" style=\"width:100%;\">\n          <label class=\"control-label\" id=\"allometries_filters-dependent_var-label\" for=\"allometries_filters-dependent_var\">Variable dependent<\/label>\n          <div>\n            <select id=\"allometries_filters-dependent_var\" class=\"form-control\" multiple=\"multiple\"><\/select>\n            <script type=\"application/json\" data-for=\"allometries_filters-dependent_var\" data-eval=\"[&quot;onInitialize&quot;]\">{\"placeholder\":null,\"plugins\":[\"remove_button\",\"selectize-plugin-a11y\"],\"onInitialize\":\"function() { this.setValue(\\\"\\\"); }\"}<\/script>\n          <\/div>\n        <\/div>\n        <div class=\"form-group shiny-input-container\" style=\"width:100%;\">\n          <label class=\"control-label\" id=\"allometries_filters-independent_var_1-label\" for=\"allometries_filters-independent_var_1\">Variable independent 1<\/label>\n          <div>\n            <select id=\"allometries_filters-independent_var_1\" class=\"form-control\" multiple=\"multiple\"><\/select>\n            <script type=\"application/json\" data-for=\"allometries_filters-independent_var_1\" data-eval=\"[&quot;onInitialize&quot;]\">{\"placeholder\":null,\"plugins\":[\"remove_button\",\"selectize-plugin-a11y\"],\"onInitialize\":\"function() { this.setValue(\\\"\\\"); }\"}<\/script>\n          <\/div>\n        <\/div>\n        <div class=\"form-group shiny-input-container\" style=\"width:100%;\">\n          <label class=\"control-label\" id=\"allometries_filters-independent_var_2-label\" for=\"allometries_filters-independent_var_2\">Variable independent 2<\/label>\n          <div>\n            <select id=\"allometries_filters-independent_var_2\" class=\"form-control\" multiple=\"multiple\"><\/select>\n            <script type=\"application/json\" data-for=\"allometries_filters-independent_var_2\" data-eval=\"[&quot;onInitialize&quot;]\">{\"placeholder\":null,\"plugins\":[\"remove_button\",\"selectize-plugin-a11y\"],\"onInitialize\":\"function() { this.setValue(\\\"\\\"); }\"}<\/script>\n          <\/div>\n        <\/div>\n        <div class=\"form-group shiny-input-container\" style=\"width:100%;\">\n          <label class=\"control-label\" id=\"allometries_filters-allometry_level-label\" for=\"allometries_filters-allometry_level\">Nivell d'al·lometria<\/label>\n          <div>\n            <select id=\"allometries_filters-allometry_level\" class=\"form-control\" multiple=\"multiple\"><\/select>\n            <script type=\"application/json\" data-for=\"allometries_filters-allometry_level\" data-eval=\"[&quot;onInitialize&quot;]\">{\"placeholder\":null,\"plugins\":[\"remove_button\",\"selectize-plugin-a11y\"],\"onInitialize\":\"function() { this.setValue(\\\"\\\"); }\"}<\/script>\n          <\/div>\n        <\/div>\n        <div class=\"form-group shiny-input-container\" style=\"width:100%;\">\n          <label class=\"control-label\" id=\"allometries_filters-spatial_level-label\" for=\"allometries_filters-spatial_level\">Nivell espacial<\/label>\n          <div>\n            <select id=\"allometries_filters-spatial_level\" class=\"form-control\" multiple=\"multiple\"><\/select>\n            <script type=\"application/json\" data-for=\"allometries_filters-spatial_level\" data-eval=\"[&quot;onInitialize&quot;]\">{\"placeholder\":null,\"plugins\":[\"remove_button\",\"selectize-plugin-a11y\"],\"onInitialize\":\"function() { this.setValue(\\\"\\\"); }\"}<\/script>\n          <\/div>\n        <\/div>\n        <div class=\"form-group shiny-input-container\" style=\"width:100%;\">\n          <label class=\"control-label\" id=\"allometries_filters-spatial_level_name-label\" for=\"allometries_filters-spatial_level_name\">Valor nivell espacial<\/label>\n          <div>\n            <select id=\"allometries_filters-spatial_level_name\" class=\"form-control\" multiple=\"multiple\"><\/select>\n            <script type=\"application/json\" data-for=\"allometries_filters-spatial_level_name\" data-eval=\"[&quot;onInitialize&quot;]\">{\"placeholder\":null,\"plugins\":[\"remove_button\",\"selectize-plugin-a11y\"],\"onInitialize\":\"function() { this.setValue(\\\"\\\"); }\"}<\/script>\n          <\/div>\n        <\/div>\n        <div class=\"form-group shiny-input-container\" style=\"width:100%;\">\n          <label class=\"control-label\" id=\"allometries_filters-functional_group_level-label\" for=\"allometries_filters-functional_group_level\">Nivell de grup funcional<\/label>\n          <div>\n            <select id=\"allometries_filters-functional_group_level\" class=\"form-control\" multiple=\"multiple\"><\/select>\n            <script type=\"application/json\" data-for=\"allometries_filters-functional_group_level\" data-eval=\"[&quot;onInitialize&quot;]\">{\"placeholder\":null,\"plugins\":[\"remove_button\",\"selectize-plugin-a11y\"],\"onInitialize\":\"function() { this.setValue(\\\"\\\"); }\"}<\/script>\n          <\/div>\n        <\/div>\n        <div class=\"form-group shiny-input-container\" style=\"width:100%;\">\n          <label class=\"control-label\" id=\"allometries_filters-functional_group_level_name-label\" for=\"allometries_filters-functional_group_level_name\">Valor de grup funcional<\/label>\n          <div>\n            <select id=\"allometries_filters-functional_group_level_name\" class=\"form-control\" multiple=\"multiple\"><\/select>\n            <script type=\"application/json\" data-for=\"allometries_filters-functional_group_level_name\" data-eval=\"[&quot;onInitialize&quot;]\">{\"placeholder\":null,\"plugins\":[\"remove_button\",\"selectize-plugin-a11y\"],\"onInitialize\":\"function() { this.setValue(\\\"\\\"); }\"}<\/script>\n          <\/div>\n        <\/div>\n        <div class=\"form-group shiny-input-container\" style=\"width:100%;\">\n          <label class=\"control-label\" id=\"allometries_filters-cubication_shape-label\" for=\"allometries_filters-cubication_shape\">Forma de cubicació<\/label>\n          <div>\n            <select id=\"allometries_filters-cubication_shape\" class=\"form-control\" multiple=\"multiple\"><\/select>\n            <script type=\"application/json\" data-for=\"allometries_filters-cubication_shape\" data-eval=\"[&quot;onInitialize&quot;]\">{\"placeholder\":null,\"plugins\":[\"remove_button\",\"selectize-plugin-a11y\"],\"onInitialize\":\"function() { this.setValue(\\\"\\\"); }\"}<\/script>\n          <\/div>\n        <\/div>\n        <div class=\"form-group shiny-input-container\" style=\"width:100%;\">\n          <label class=\"control-label\" id=\"allometries_filters-special_param-label\" for=\"allometries_filters-special_param\">Paràmetre especial (nemés per Q. suber)<\/label>\n          <div>\n            <select id=\"allometries_filters-special_param\" class=\"form-control\" multiple=\"multiple\"><\/select>\n            <script type=\"application/json\" data-for=\"allometries_filters-special_param\" data-eval=\"[&quot;onInitialize&quot;]\">{\"placeholder\":null,\"plugins\":[\"remove_button\",\"selectize-plugin-a11y\"],\"onInitialize\":\"function() { this.setValue(\\\"\\\"); }\"}<\/script>\n          <\/div>\n        <\/div>\n        <a id=\"allometries_filters-reset_all\" href=\"#\" class=\"action-button\" style=\"float; right;\">\n          <i class=\"fa fa-times\" role=\"presentation\" aria-label=\"times icon\"><\/i>\n          Restableix els filtres\n        <\/a>\n        <h4>Descarrega la taula de al·lometries<\/h4>\n        <a id=\"download_allotable_csv\" class=\"btn btn-default shiny-download-link \" href=\"\" target=\"_blank\" download>\n          <i class=\"fa fa-download\" role=\"presentation\" aria-label=\"download icon\"><\/i>\n          csv\n        <\/a>\n        <a id=\"download_allotable_xlsx\" class=\"btn btn-default shiny-download-link \" href=\"\" target=\"_blank\" download>\n          <i class=\"fa fa-download\" role=\"presentation\" aria-label=\"download icon\"><\/i>\n          xlsx\n        <\/a>\n      <\/form>\n    <\/div>\n    <div class=\"col-sm-9\" role=\"main\">\n      <div class=\"tabbable\">\n        <ul class=\"nav nav-tabs shiny-tab-input\" id=\"tabs_panel\" data-tabsetid=\"9155\">\n          <li class=\"active\">\n            <a href=\"#tab-9155-1\" data-toggle=\"tab\" data-bs-toggle=\"tab\" data-value=\"Taula\">Taula<\/a>\n          <\/li>\n          <li>\n            <a href=\"#tab-9155-2\" data-toggle=\"tab\" data-bs-toggle=\"tab\" data-value=\"Calcula\">Calcula<\/a>\n          <\/li>\n        <\/ul>\n        <div class=\"tab-content\" data-tabsetid=\"9155\">\n          <div class=\"tab-pane active\" data-value=\"Taula\" id=\"tab-9155-1\">\n            <div id=\"allometr_table\" style=\"width:100%; height:auto; \" class=\"datatables html-widget html-widget-output\"><\/div>\n          <\/div>\n          <div class=\"tab-pane\" data-value=\"Calcula\" id=\"tab-9155-2\">\n            <div class=\"row\">\n              <div class=\"col-sm-3\">\n                <br/>\n                <div class=\"panel card mb-3 panel-default\">\n                  <div class=\"panel-heading card-header bg-default\">\n                    <h3 class=\"panel-title m-0 card-title\">Selecciona les dades per convertir<\/h3>\n                  <\/div>\n                  <div class=\"panel-body card-body\">\n                    <p>Selecciona un arxiu amb les dades per convertir. Els formats acceptats són csv i xlsx, i la primera fila ha de ser un capçal amb els noms de les columnes.<\/p>\n                    <div class=\"form-group shiny-input-container\">\n                      <label class=\"control-label shiny-label-null\" for=\"user_data\" id=\"user_data-label\"><\/label>\n                      <div class=\"input-group\">\n                        <label class=\"input-group-btn input-group-prepend\">\n                          <span class=\"btn btn-default btn-file\">\n                            Inspecciona...\n                            <input id=\"user_data\" name=\"user_data\" type=\"file\" style=\"position: absolute !important; top: -99999px !important; left: -99999px !important;\" accept=\".csv,.xlsx,text/csv,text/comma-separated-values,text/plain,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\"/>\n                          <\/span>\n                        <\/label>\n                        <input type=\"text\" class=\"form-control\" placeholder=\"Cap fitxer seleccionat...\" readonly=\"readonly\"/>\n                      <\/div>\n                      <div id=\"user_data_progress\" class=\"progress active shiny-file-input-progress\">\n                        <div class=\"progress-bar\"><\/div>\n                      <\/div>\n                    <\/div>\n                    <p>\n                      Selecciona les al·lometries a calcular. En cas de dubte consulta la \n                      <a id=\"link_to_table\" href=\"#\" class=\"action-button\">taula de al·lometries<\/a>\n                    <\/p>\n                    <div class=\"form-group shiny-input-container\">\n                      <label class=\"control-label shiny-label-null\" for=\"allometry_selector\"><\/label>\n                      <select data-live-search=\"true\" data-none-selected-text=\"Res seleccionat\" data-size=\"5\" id=\"allometry_selector\" class=\"selectpicker form-control\" multiple=\"multiple\"><option value=\"\"><\/option><\/select>\n                    <\/div>\n                    <p>Selecciona les variables de les dades carregades que es corresponen amb les variables independents en l'equació lomètrica:<\/p>\n                    <div id=\"var_declaration\" class=\"shiny-html-output\"><\/div>\n                    <h4>Descarrega las al·lometries calculades<\/h4>\n                    <a id=\"download_alloresults_csv\" class=\"btn btn-default shiny-download-link \" href=\"\" target=\"_blank\" download>\n                      <i class=\"fa fa-download\" role=\"presentation\" aria-label=\"download icon\"><\/i>\n                      csv\n                    <\/a>\n                    <a id=\"download_alloresults_xlsx\" class=\"btn btn-default shiny-download-link \" href=\"\" target=\"_blank\" download>\n                      <i class=\"fa fa-download\" role=\"presentation\" aria-label=\"download icon\"><\/i>\n                      xlsx\n                    <\/a>\n                  <\/div>\n                <\/div>\n              <\/div>\n              <div class=\"col-sm-9\">\n                <div id=\"res_data\" class=\"shiny-html-output\"><\/div>\n              <\/div>\n            <\/div>\n          <\/div>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n<\/div>",
+      "deps": [
+        {
+          "name": "jquery",
+          "version": "3.6.0",
+          "src": {
+            "href": "shared"
+          },
+          "meta": null,
+          "script": "jquery.min.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        },
+        {
+          "name": "selectize",
+          "version": "0.12.4",
+          "src": {
+            "href": "shared/selectize"
+          },
+          "meta": null,
+          "script": [
+            "js/selectize.min.js",
+            "accessibility/js/selectize-plugin-a11y.min.js"
+          ],
+          "stylesheet": "css/selectize.bootstrap3.css",
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        },
+        {
+          "name": "font-awesome",
+          "version": "5.15.3",
+          "src": {
+            "href": "font-awesome-5.15.3"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": [
+            "css/all.min.css",
+            "css/v4-shims.min.css"
+          ],
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        },
+        {
+          "name": "htmlwidgets",
+          "version": "1.5.4",
+          "src": {
+            "href": "htmlwidgets-1.5.4"
+          },
+          "meta": null,
+          "script": "htmlwidgets.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        },
+        {
+          "name": "datatables-css",
+          "version": "0.0.0",
+          "src": {
+            "href": "datatables-css-0.0.0"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": "datatables-crosstalk.css",
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        },
+        {
+          "name": "datatables-binding",
+          "version": "0.22",
+          "src": {
+            "href": "datatables-binding-0.22"
+          },
+          "meta": null,
+          "script": "datatables.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": false
+        },
+        {
+          "name": "crosstalk",
+          "version": "1.2.0",
+          "src": {
+            "href": "crosstalk-1.2.0"
+          },
+          "meta": null,
+          "script": "js/crosstalk.min.js",
+          "stylesheet": "css/crosstalk.min.css",
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        },
+        {
+          "name": "shinyWidgets",
+          "version": "0.6.4",
+          "src": {
+            "href": "shinyWidgets"
+          },
+          "meta": null,
+          "script": "shinyWidgets-bindings.min.js",
+          "stylesheet": "shinyWidgets.min.css",
+          "head": null,
+          "attachment": null,
+          "all_files": false
+        },
+        {
+          "name": "bootstrap-select",
+          "version": "1.13.8",
+          "src": {
+            "href": "shinyWidgets/bootstrap-select"
+          },
+          "meta": null,
+          "script": "js/bootstrap-select.min.js",
+          "stylesheet": "css/bootstrap-select.min.css",
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        },
+        {
+          "name": "bootstrap",
+          "version": "3.4.1",
+          "src": {
+            "href": "shared/bootstrap"
+          },
+          "meta": {
+            "viewport": "width=device-width, initial-scale=1"
+          },
+          "script": [
+            "js/bootstrap.min.js",
+            "accessibility/js/bootstrap-accessibility.min.js"
+          ],
+          "stylesheet": [
+            "css/bootstrap.min.css",
+            "accessibility/css/bootstrap-accessibility.min.css"
+          ],
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        }
+      ]
+    }
+  },
+  "export": {
+
+  }
+}
