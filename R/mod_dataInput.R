@@ -73,7 +73,7 @@ mod_dataInput <- function(
         }
       ),
       shiny::actionLink(
-        ns("reset_all"), label = btn_label, icon = shiny::icon("remove"),
+        ns("reset_all"), label = btn_label, icon = shiny::icon("times"),
         style = "float; right;"
       )
     )
