@@ -135,12 +135,15 @@ $(document).on('shiny:disconnected', function(event) {
     # hostess init
     hostess_init <- waiter::Hostess$new('loader', infinite = TRUE)
     hostess_init$start()
+    # close init
+    on.exit(hostess_init$close(), add = TRUE)
+    on.exit(waiter::waiter_hide(), add = TRUE)
 
     ### DB access ################################################################
     allomdb <- lfcdata::allometries()
 
     ### Variables names inter ####################################################
-    cubication_thesaurus <- allomdb$get_data('thesaurus_cubication')
+    # cubication_thesaurus <- allomdb$get_data('thesaurus_cubication')
     variables_thesaurus <- allomdb$get_data('thesaurus_variables')
     allometries_table <-
       allomdb$get_data('allometries') %>%
@@ -523,10 +526,6 @@ $(document).on('shiny:disconnected', function(event) {
         writexl::write_xlsx(data_res, file)
       }
     )
-
-    # close init
-    hostess_init$close()
-    waiter::waiter_hide()
 
   } # end of server function
 
