@@ -223,7 +223,8 @@ $(document).on('shiny:disconnected', function(event) {
                 functional_group_level_name = list(inputId = 'functional_group_level_name', title = translate_app('functional_group_level_name', lang_declared, allomdb)),
                 cubication_shape = list(inputId = 'cubication_shape', title = translate_app('cubication_shape', lang_declared, allomdb)),
                 special_param = list(inputId = 'special_param', title = translate_app('special_param', lang_declared, allomdb))
-              )
+              ),
+              btn_label = translate_app("reset_all", lang_declared, allomdb)
             ),
             # download buttons
             shiny::h4(translate_app('sidebar_download_h4', lang_declared, allomdb)),
