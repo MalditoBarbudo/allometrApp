@@ -1,7 +1,5 @@
 #' function to launch the allometr app
 #'
-#' @importFrom magrittr %>%
-#'
 #' @export
 allometr_app <- function() {
 
@@ -146,35 +144,35 @@ $(document).on('shiny:disconnected', function(event) {
     # cubication_thesaurus <- allomdb$get_data('thesaurus_cubication')
     variables_thesaurus <- allomdb$get_data('thesaurus_variables')
     allometries_table <-
-      allomdb$get_data('allometries') %>%
+      allomdb$get_data('allometries') |>
       # dependent var
       dplyr::left_join(
-        variables_thesaurus %>%
+        variables_thesaurus |>
           dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
         by = c("dependent_var" = "var_id"),
         suffix = c("", "_dependent")
-      ) %>%
+      ) |>
       # independent_var_1
       dplyr::left_join(
-        variables_thesaurus %>%
+        variables_thesaurus |>
           dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
         by = c("independent_var_1" = "var_id"),
         suffix = c("", "_independent_1")
-      ) %>%
+      ) |>
       # independent_var_2
       dplyr::left_join(
-        variables_thesaurus %>%
+        variables_thesaurus |>
           dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
         by = c("independent_var_2" = "var_id"),
         suffix = c("", "_independent_2")
-      ) %>%
+      ) |>
       # independent_var_3
       dplyr::left_join(
-        variables_thesaurus %>%
+        variables_thesaurus |>
           dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
         by = c("independent_var_3" = "var_id"),
         suffix = c("", "_independent_3")
-      ) %>%
+      ) |>
       dplyr::rename(
         dependent_var_units = var_units,
         dependent_var_translation_cat = translation_cat,
@@ -328,11 +326,9 @@ $(document).on('shiny:disconnected', function(event) {
 
       lang_declared <- lang()
 
-      alloms_filtered() %>%
-        dplyr::mutate_if(is.numeric, round, 3) %>%
-        magrittr::set_colnames(
-          translate_app(names(.), lang_declared, allomdb)
-        ) %>%
+      alloms_filtered() |>
+        dplyr::mutate_if(is.numeric, round, 3) |>
+        purrr::set_names(translate_app(names(alloms_filtered()), lang_declared, allomdb)) |>
         DT::datatable(
           class = 'compact hover nowrap row-border order-column',
           extensions = 'Scroller',
@@ -354,7 +350,7 @@ $(document).on('shiny:disconnected', function(event) {
         return(NULL)
       }
 
-      extension <- input$user_data$name %>%
+      extension <- input$user_data$name |>
         stringr::str_extract('\\.[a-zA-Z]{3,4}$')
       if (extension == '.csv') {
         res <- readr::read_csv(input$user_data$datapath)
@@ -366,7 +362,7 @@ $(document).on('shiny:disconnected', function(event) {
     })
 
     observe({
-      id_choices <- alloms_filtered() %>%
+      id_choices <- alloms_filtered() |>
         dplyr::pull(allometry_id)
 
       shinyWidgets::updatePickerInput(
@@ -384,26 +380,17 @@ $(document).on('shiny:disconnected', function(event) {
       allom_id <- input$allometry_selector
       allom_desc <- allomdb$description(id = allom_id)
 
-      independent_vars <- allom_desc %>% {
-
-        iv1 <- purrr::map_depth(., 1, 'independent_var_1') %>% purrr::flatten_chr()
-        iv2 <- purrr::map_depth(., 1, 'independent_var_2') %>% purrr::flatten_chr()
-        iv3 <- purrr::map_depth(., 1, 'independent_var_3') %>% purrr::flatten_chr()
-
-        c(iv1, iv2, iv3) %>%
-          unique() %>%
-          purrr::discard(function(x) {is.na(x)})
-      }
+      independent_vars <- get_independent_vars_helper(allom_desc)
 
       lapply(independent_vars, function(x) {
 
-        units <- variables_thesaurus %>%
-          dplyr::filter(var_id == x) %>%
+        units <- variables_thesaurus |>
+          dplyr::filter(var_id == x) |>
           dplyr::pull(var_units)
 
         shinyWidgets::pickerInput(
           glue::glue("{x}_input"), glue::glue(translate_app('calculate_panel_vardec_inputs', lang(), allomdb)),
-          choices = user_data() %>% dplyr::select_if(is.numeric) %>% names()
+          choices = user_data() |> dplyr::select_if(is.numeric) |> names()
         )
       })
     })
@@ -415,27 +402,18 @@ $(document).on('shiny:disconnected', function(event) {
       allom_id <- input$allometry_selector
       allom_desc <- allomdb$description(id = allom_id)
 
-      independent_vars <- allom_desc %>% {
+      independent_vars <- get_independent_vars_helper(allom_desc)
 
-        iv1 <- purrr::map_depth(., 1, 'independent_var_1') %>% purrr::flatten_chr()
-        iv2 <- purrr::map_depth(., 1, 'independent_var_2') %>% purrr::flatten_chr()
-        iv3 <- purrr::map_depth(., 1, 'independent_var_3') %>% purrr::flatten_chr()
-
-        c(iv1, iv2, iv3) %>%
-          unique() %>%
-          purrr::discard(function(x) {is.na(x)})
-      }
-
-      independent_vars %>%
+      independent_vars |>
         purrr::walk(
           ~ shiny::validate(
             shiny::need(input[[paste0(.x, '_input')]], translate_app('need_vardec', lang(), allomdb))
           )
-        ) %>%
+        ) |>
         purrr::map_chr(
           ~ glue::glue("user_data()[['{input[[paste0(.x, '_input')]]}']]")
-        ) %>%
-        rlang::parse_exprs() %>%
+        ) |>
+        rlang::parse_exprs() |>
         rlang::set_names(independent_vars)
 
     })
@@ -463,15 +441,16 @@ $(document).on('shiny:disconnected', function(event) {
       )
 
       # let's use the calculate method in lfcdata
-      input$allometry_selector %>%
+      res_calculation <- input$allometry_selector |>
         purrr::map_dfc(
           ~ allomdb$calculate(
             !!! allom_variables_exprs(),
             allometry_id = .x
           )
-        ) %>%
-        rlang::set_names(input$allometry_selector) %>%
-        {dplyr::bind_cols(user_data(), .)}
+        ) |>
+        rlang::set_names(input$allometry_selector)
+
+      dplyr::bind_cols(user_data(), res_calculation)
     })
 
     output$res_data <- renderTable({

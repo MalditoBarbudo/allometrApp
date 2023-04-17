@@ -115,9 +115,9 @@ mod_data <- function(
 
   # initial update
   purrr::walk(vars, function(x) {
-    vals <- sort(unique(data[[x]])) %>% {
-      magrittr::set_names(., translate_app(., 'cat', db))
-    }
+    names_to_translate <- sort(unique(data[[x]]))
+    vals <- names_to_translate |>
+      purrr::set_names(translate_app(names_to_translate, 'cat', db))
     shiny::updateSelectizeInput(
       session = session, inputId = x,
       choices = vals, server = TRUE
@@ -130,9 +130,9 @@ mod_data <- function(
     handlerExpr = {
       # reset update
       purrr::walk(vars, function(x) {
-        vals <- sort(unique(data[[x]])) %>% {
-          magrittr::set_names(., translate_app(., lang(), db))
-        }
+        names_to_translate <- sort(unique(data[[x]]))
+        vals <- names_to_translate |>
+          purrr::set_names(translate_app(names_to_translate, lang(), db))
         shiny::updateSelectizeInput(
           session = session, inputId = x,
           choices = vals, server = TRUE
@@ -147,9 +147,9 @@ mod_data <- function(
     handlerExpr = {
       # reset update
       purrr::walk(vars, function(x) {
-        vals <- sort(unique(data[[x]])) %>% {
-          magrittr::set_names(., translate_app(., lang(), db))
-        }
+        names_to_translate <- sort(unique(data[[x]]))
+        vals <- names_to_translate |>
+          purrr::set_names(translate_app(names_to_translate, lang(), db))
         shiny::updateSelectizeInput(
           session = session, inputId = x,
           choices = vals, server = TRUE
@@ -174,7 +174,7 @@ mod_data <- function(
 
           indicator <- purrr::map(vars, function(x) {
             data[[x]] %inT% input[[x]]
-          }) %>%
+          }) |>
             purrr::reduce(`&`)
 
           data <- data[indicator, ]
@@ -196,9 +196,9 @@ mod_data <- function(
             ovars,
             function(x) {
               if (is.null(input[[x]])) {
-                vals <- sort(unique(data[[x]])) %>% {
-                  magrittr::set_names(., translate_app(., lang(), db))
-                }
+                names_to_translate <- sort(unique(data[[x]]))
+                vals <- names_to_translate |>
+                  purrr::set_names(translate_app(names_to_translate, lang(), db))
                 shiny::updateSelectizeInput(
                   session = session, inputId = x,
                   choices = vals, server = TRUE
@@ -209,9 +209,9 @@ mod_data <- function(
 
           # update the proper input we are iterating
           if (is.null(input[[x]])) {
-            vals <- sort(unique(data[[x]])) %>% {
-              magrittr::set_names(., translate_app(., lang(), db))
-            }
+            names_to_translate <- sort(unique(data[[x]]))
+            vals <- names_to_translate |>
+              purrr::set_names(translate_app(names_to_translate, lang(), db))
             shiny::updateSelectizeInput(
               session = session, inputId = x,
               choices = vals, server = TRUE
@@ -227,7 +227,7 @@ mod_data <- function(
 
     indicator <- purrr::map(vars, function(x) {
       data[[x]] %inT% input[[x]]
-    }) %>%
+    }) |>
       purrr::reduce(`&`)
 
     data[indicator, ]
