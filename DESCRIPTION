@@ -19,6 +19,7 @@ Imports:
     writexl,
     DT,
     rlang,
-    lfcdata (>= 0.0.4)
-Remotes:  
+    lfcdata (>= 0.0.4),
+    waiter
+Remotes: 
     MalditoBarbudo/lfcdata
