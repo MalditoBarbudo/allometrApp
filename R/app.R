@@ -41,14 +41,8 @@ $(document).on('shiny:disconnected', function(event) {
     waiter::use_hostess(),
     # show waiter on load
     waiter::waiter_show_on_load(
-      color = '#E8EAEB',
-      html = waiter::hostess_loader(
-        "loader",
-        svg = 'images/hostess_image.svg',
-        progress_type = 'fill',
-        fill_direction = 'btt',
-        center_page = TRUE
-      )
+      color = '#F8F9FA',
+      html = waiter::spin_chasing_dots()
     ),
 
     # css
@@ -145,6 +139,18 @@ $(document).on('shiny:disconnected', function(event) {
     })
 
     # hostess init
+    waiter::waiter_update(
+      html = shiny::tagList(
+        shiny::br(), shiny::br(),
+        waiter::hostess_loader(
+          "loader",
+          svg = 'images/hostess_image.svg',
+          progress_type = 'fill',
+          fill_direction = 'btt',
+          center_page = TRUE
+        )
+      )
+    )
     hostess_init <- waiter::Hostess$new('loader', infinite = TRUE)
     hostess_init$start()
     # close init
@@ -156,55 +162,55 @@ $(document).on('shiny:disconnected', function(event) {
 
     ### Variables names inter ####################################################
     # cubication_thesaurus <- allomdb$get_data('thesaurus_cubication')
-    variables_thesaurus <- allomdb$get_data('thesaurus_variables')
-    allometries_table <-
-      allomdb$get_data('allometries') |>
-      # dependent var
-      dplyr::left_join(
-        variables_thesaurus |>
-          dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
-        by = c("dependent_var" = "var_id"),
-        suffix = c("", "_dependent")
-      ) |>
-      # independent_var_1
-      dplyr::left_join(
-        variables_thesaurus |>
-          dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
-        by = c("independent_var_1" = "var_id"),
-        suffix = c("", "_independent_1")
-      ) |>
-      # independent_var_2
-      dplyr::left_join(
-        variables_thesaurus |>
-          dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
-        by = c("independent_var_2" = "var_id"),
-        suffix = c("", "_independent_2")
-      ) |>
-      # independent_var_3
-      dplyr::left_join(
-        variables_thesaurus |>
-          dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
-        by = c("independent_var_3" = "var_id"),
-        suffix = c("", "_independent_3")
-      ) |>
-      dplyr::rename(
-        dependent_var_units = var_units,
-        dependent_var_translation_cat = translation_cat,
-        dependent_var_translation_spa = translation_spa,
-        dependent_var_translation_eng = translation_eng,
-        independent_var_1_units = var_units_independent_1,
-        independent_var_1_translation_cat = translation_cat_independent_1,
-        independent_var_1_translation_spa = translation_spa_independent_1,
-        independent_var_1_translation_eng = translation_eng_independent_1,
-        independent_var_2_units = var_units_independent_2,
-        independent_var_2_translation_cat = translation_cat_independent_2,
-        independent_var_2_translation_spa = translation_spa_independent_2,
-        independent_var_2_translation_eng = translation_eng_independent_2,
-        independent_var_3_units = var_units_independent_3,
-        independent_var_3_translation_cat = translation_cat_independent_3,
-        independent_var_3_translation_spa = translation_spa_independent_3,
-        independent_var_3_translation_eng = translation_eng_independent_3
-      )
+    # variables_thesaurus <- allomdb$get_data('thesaurus_variables')
+    # allometries_table <-
+    #   allomdb$get_data('allometries') |>
+    #   # dependent var
+    #   dplyr::left_join(
+    #     variables_thesaurus |>
+    #       dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
+    #     by = c("dependent_var" = "var_id"),
+    #     suffix = c("", "_dependent")
+    #   ) |>
+    #   # independent_var_1
+    #   dplyr::left_join(
+    #     variables_thesaurus |>
+    #       dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
+    #     by = c("independent_var_1" = "var_id"),
+    #     suffix = c("", "_independent_1")
+    #   ) |>
+    #   # independent_var_2
+    #   dplyr::left_join(
+    #     variables_thesaurus |>
+    #       dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
+    #     by = c("independent_var_2" = "var_id"),
+    #     suffix = c("", "_independent_2")
+    #   ) |>
+    #   # independent_var_3
+    #   dplyr::left_join(
+    #     variables_thesaurus |>
+    #       dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
+    #     by = c("independent_var_3" = "var_id"),
+    #     suffix = c("", "_independent_3")
+    #   ) |>
+    #   dplyr::rename(
+    #     dependent_var_units = var_units,
+    #     dependent_var_translation_cat = translation_cat,
+    #     dependent_var_translation_spa = translation_spa,
+    #     dependent_var_translation_eng = translation_eng,
+    #     independent_var_1_units = var_units_independent_1,
+    #     independent_var_1_translation_cat = translation_cat_independent_1,
+    #     independent_var_1_translation_spa = translation_spa_independent_1,
+    #     independent_var_1_translation_eng = translation_eng_independent_1,
+    #     independent_var_2_units = var_units_independent_2,
+    #     independent_var_2_translation_cat = translation_cat_independent_2,
+    #     independent_var_2_translation_spa = translation_spa_independent_2,
+    #     independent_var_2_translation_eng = translation_eng_independent_2,
+    #     independent_var_3_units = var_units_independent_3,
+    #     independent_var_3_translation_cat = translation_cat_independent_3,
+    #     independent_var_3_translation_spa = translation_spa_independent_3,
+    #     independent_var_3_translation_eng = translation_eng_independent_3
+    #   )
 
 
 
@@ -220,26 +226,26 @@ $(document).on('shiny:disconnected', function(event) {
 
           sidebarPanel = shiny::sidebarPanel(
             width = 3,
-            shiny::h4(translate_app('sidebar_filter_h4', lang_declared, allomdb)),
+            shiny::h4(translate_app('sidebar_filter_h4', lang_declared)),
             mod_dataInput(
               id = 'allometries_filters', inline = FALSE,
               params = list(
-                dependent_var = list(inputId = 'dependent_var', title = translate_app('dependent_var', lang_declared, allomdb)),
-                independent_var_1 = list(inputId = 'independent_var_1', title = translate_app('independent_var_1', lang_declared, allomdb)),
-                independent_var_2 = list(inputId = 'independent_var_2', title = translate_app('independent_var_2', lang_declared, allomdb)),
-                # independent_var_3 = list(inputId = 'independent_var_3', title = translate_app# dependent_var', lang_declared, allomdb)),
-                allometry_level = list(inputId = 'allometry_level', title = translate_app('allometry_level', lang_declared, allomdb)),
-                spatial_level = list(inputId = 'spatial_level', title = translate_app('spatial_level', lang_declared, allomdb)),
-                spatial_level_name = list(inputId = 'spatial_level_name', title = translate_app('spatial_level_name', lang_declared, allomdb)),
-                functional_group_level = list(inputId = 'functional_group_level', title = translate_app('functional_group_level', lang_declared, allomdb)),
-                functional_group_level_name = list(inputId = 'functional_group_level_name', title = translate_app('functional_group_level_name', lang_declared, allomdb)),
-                cubication_shape = list(inputId = 'cubication_shape', title = translate_app('cubication_shape', lang_declared, allomdb)),
-                special_param = list(inputId = 'special_param', title = translate_app('special_param', lang_declared, allomdb))
+                dependent_var = list(inputId = 'dependent_var', title = translate_app('dependent_var', lang_declared)),
+                independent_var_1 = list(inputId = 'independent_var_1', title = translate_app('independent_var_1', lang_declared)),
+                independent_var_2 = list(inputId = 'independent_var_2', title = translate_app('independent_var_2', lang_declared)),
+                # independent_var_3 = list(inputId = 'independent_var_3', title = translate_app# dependent_var', lang_declared)),
+                allometry_level = list(inputId = 'allometry_level', title = translate_app('allometry_level', lang_declared)),
+                spatial_level = list(inputId = 'spatial_level', title = translate_app('spatial_level', lang_declared)),
+                spatial_level_name = list(inputId = 'spatial_level_name', title = translate_app('spatial_level_name', lang_declared)),
+                functional_group_level = list(inputId = 'functional_group_level', title = translate_app('functional_group_level', lang_declared)),
+                functional_group_level_name = list(inputId = 'functional_group_level_name', title = translate_app('functional_group_level_name', lang_declared)),
+                cubication_shape = list(inputId = 'cubication_shape', title = translate_app('cubication_shape', lang_declared)),
+                special_param = list(inputId = 'special_param', title = translate_app('special_param', lang_declared))
               ),
-              btn_label = translate_app("reset_all", lang_declared, allomdb)
+              btn_label = translate_app("reset_all", lang_declared)
             ),
             # download buttons
-            shiny::h4(translate_app('sidebar_download_h4', lang_declared, allomdb)),
+            shiny::h4(translate_app('sidebar_download_h4', lang_declared)),
             shiny::downloadButton('download_allotable_csv', 'csv'),
             shiny::downloadButton('download_allotable_xlsx', 'xlsx')
           ),
@@ -252,24 +258,24 @@ $(document).on('shiny:disconnected', function(event) {
 
               # table tab
               shiny::tabPanel(
-                translate_app('table_tab_title', lang_declared, allomdb),
+                translate_app('table_tab_title', lang_declared),
                 DT::DTOutput('allometr_table')
               ),
 
               # calculate panel
               shiny::tabPanel(
-                translate_app('calculate_tab_title', lang_declared, allomdb),
+                translate_app('calculate_tab_title', lang_declared),
 
                 shiny::fluidRow(
                   shiny::column(
                     3,
                     shiny::br(),
                     shinyWidgets::panel(
-                      heading = translate_app('calculate_panel_heading', lang_declared, allomdb),
+                      heading = translate_app('calculate_panel_heading', lang_declared),
 
                       # panel contents
                       shiny::p(
-                        translate_app('calculate_panel_upload_p', lang_declared, allomdb)
+                        translate_app('calculate_panel_upload_p', lang_declared)
                       ),
                       shiny::fileInput(
                         'user_data', NULL, FALSE,
@@ -277,26 +283,26 @@ $(document).on('shiny:disconnected', function(event) {
                           '.csv', '.xlsx', 'text/csv', 'text/comma-separated-values,text/plain',
                           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                         ),
-                        buttonLabel = translate_app('user_data_button_label', lang_declared, allomdb),
-                        placeholder = translate_app('user_data_button_placeholder', lang_declared, allomdb)
+                        buttonLabel = translate_app('user_data_button_label', lang_declared),
+                        placeholder = translate_app('user_data_button_placeholder', lang_declared)
                       ),
                       shiny::p(
-                        translate_app('calculate_panel_allosel_p', lang_declared, allomdb),
-                        shiny::actionLink('link_to_table', translate_app('calculate_panel_allotable_link', lang_declared, allomdb))
+                        translate_app('calculate_panel_allosel_p', lang_declared),
+                        shiny::actionLink('link_to_table', translate_app('calculate_panel_allotable_link', lang_declared))
                       ),
                       shinyWidgets::pickerInput(
                         'allometry_selector', NULL, choices = '', multiple = TRUE,
                         options = shinyWidgets::pickerOptions(
                           size = 5, liveSearch = TRUE,
-                          noneSelectedText = translate_app('nothing_selected', lang_declared, allomdb)
+                          noneSelectedText = translate_app('nothing_selected', lang_declared)
                         )
                       ),
                       shiny::p(
-                        translate_app('calculate_panel_vardec_p', lang_declared, allomdb)
+                        translate_app('calculate_panel_vardec_p', lang_declared)
                       ),
                       shiny::uiOutput('var_declaration'),
                       # download buttons
-                      shiny::h4(translate_app('calculate_panel_download_h4', lang_declared, allomdb)),
+                      shiny::h4(translate_app('calculate_panel_download_h4', lang_declared)),
                       shiny::downloadButton('download_alloresults_csv', 'csv'),
                       shiny::downloadButton('download_alloresults_xlsx', 'xlsx')
                     )
@@ -316,7 +322,7 @@ $(document).on('shiny:disconnected', function(event) {
     ## module calling ####
     alloms_filtered <- shiny::callModule(
       mod_data, id = 'allometries_filters', data = allometries_table,
-      lang = lang, db = allomdb,
+      lang = lang,
       vars = c(
         'dependent_var', 'independent_var_1', 'independent_var_2', #'independent_var_3',
         'allometry_level', 'spatial_level', 'spatial_level_name', 'functional_group_level',
@@ -329,7 +335,7 @@ $(document).on('shiny:disconnected', function(event) {
       input$link_to_table,
       {
         shiny::updateTabsetPanel(
-          session, 'tabs_panel', translate_app('table_tab_title', lang(), allomdb)
+          session, 'tabs_panel', translate_app('table_tab_title', lang())
         )
       }
     )
@@ -342,7 +348,7 @@ $(document).on('shiny:disconnected', function(event) {
 
       alloms_filtered() |>
         dplyr::mutate_if(is.numeric, round, 3) |>
-        purrr::set_names(translate_app(names(alloms_filtered()), lang_declared, allomdb)) |>
+        purrr::set_names(translate_app(names(alloms_filtered()), lang_declared)) |>
         DT::datatable(
           class = 'compact hover nowrap row-border order-column',
           extensions = 'Scroller',
@@ -387,14 +393,12 @@ $(document).on('shiny:disconnected', function(event) {
     output$var_declaration <- renderUI({
 
       shiny::validate(
-        shiny::need(user_data(), translate_app('need_user_data', lang(), allomdb)),
-        shiny::need(input$allometry_selector, translate_app('need_allosel', lang(), allomdb))
+        shiny::need(user_data(), translate_app('need_user_data', lang())),
+        shiny::need(input$allometry_selector, translate_app('need_allosel', lang()))
       )
 
       allom_id <- input$allometry_selector
-      allom_desc <- allomdb$description(id = allom_id)
-
-      independent_vars <- get_independent_vars_helper(allom_desc)
+      independent_vars <- get_independent_vars_helper(allom_id)
 
       lapply(independent_vars, function(x) {
 
@@ -403,7 +407,7 @@ $(document).on('shiny:disconnected', function(event) {
           dplyr::pull(var_units)
 
         shinyWidgets::pickerInput(
-          glue::glue("{x}_input"), glue::glue(translate_app('calculate_panel_vardec_inputs', lang(), allomdb)),
+          glue::glue("{x}_input"), glue::glue(translate_app('calculate_panel_vardec_inputs', lang())),
           choices = user_data() |> dplyr::select_if(is.numeric) |> names()
         )
       })
@@ -414,14 +418,12 @@ $(document).on('shiny:disconnected', function(event) {
       # browser()
 
       allom_id <- input$allometry_selector
-      allom_desc <- allomdb$description(id = allom_id)
-
-      independent_vars <- get_independent_vars_helper(allom_desc)
+      independent_vars <- get_independent_vars_helper(allom_id)
 
       independent_vars |>
         purrr::walk(
           ~ shiny::validate(
-            shiny::need(input[[paste0(.x, '_input')]], translate_app('need_vardec', lang(), allomdb))
+            shiny::need(input[[paste0(.x, '_input')]], translate_app('need_vardec', lang()))
           )
         ) |>
         purrr::map_chr(
@@ -438,19 +440,19 @@ $(document).on('shiny:disconnected', function(event) {
       shiny::validate(
         shiny::need(
           user_data(),
-          translate_app('need_user_data', lang(), allomdb)
+          translate_app('need_user_data', lang())
         ),
         shiny::need(
           input$allometry_selector,
-          translate_app('need_allosel', lang(), allomdb)
+          translate_app('need_allosel', lang())
         ),
         shiny::need(
           allom_variables_exprs(),
-          translate_app('need_vardec', lang(), allomdb)
+          translate_app('need_vardec', lang())
         ),
         shiny::need(
           length(allom_variables_exprs()) > 0,
-          translate_app('need_vardec', lang(), allomdb)
+          translate_app('need_vardec', lang())
         )
       )
 

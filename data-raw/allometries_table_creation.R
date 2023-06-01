@@ -1,43 +1,38 @@
 # database
-allometr_db <- pool::dbPool(
-  RPostgreSQL::PostgreSQL(),
-  user = 'guest',
-  password = 'guest',
-  dbname = 'allometr_db',
-  host = '158.109.46.23',
-  port = 5432
-)
+allometr_db <- lfcdata::allometries()
 
 # tables
-variables_thesaurus <- dplyr::tbl(allometr_db, tolower('THESAURUS_VARIABLES')) %>% dplyr::collect()
-
-
-allometries_table <- dplyr::tbl(allometr_db, tolower('ALLOMETRIES')) %>%
-  dplyr::collect() %>%
+variables_thesaurus <- allometr_db$get_data('thesaurus_variables')
+allometries_table <-
+  allometr_db$get_data('allometries') |>
   # dependent var
   dplyr::left_join(
-    variables_thesaurus %>% dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
+    variables_thesaurus |>
+      dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
     by = c("dependent_var" = "var_id"),
     suffix = c("", "_dependent")
-  ) %>%
+  ) |>
   # independent_var_1
   dplyr::left_join(
-    variables_thesaurus %>% dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
+    variables_thesaurus |>
+      dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
     by = c("independent_var_1" = "var_id"),
     suffix = c("", "_independent_1")
-  ) %>%
+  ) |>
   # independent_var_2
   dplyr::left_join(
-    variables_thesaurus %>% dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
+    variables_thesaurus |>
+      dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
     by = c("independent_var_2" = "var_id"),
     suffix = c("", "_independent_2")
-  ) %>%
+  ) |>
   # independent_var_3
   dplyr::left_join(
-    variables_thesaurus %>% dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
+    variables_thesaurus |>
+      dplyr::select(var_id, var_units, dplyr::starts_with('translation')),
     by = c("independent_var_3" = "var_id"),
     suffix = c("", "_independent_3")
-  ) %>%
+  ) |>
   dplyr::rename(
     dependent_var_units = var_units,
     dependent_var_translation_cat = translation_cat,
@@ -56,12 +51,10 @@ allometries_table <- dplyr::tbl(allometr_db, tolower('ALLOMETRIES')) %>%
     independent_var_3_translation_spa = translation_spa_independent_3,
     independent_var_3_translation_eng = translation_eng_independent_3
   )
+thesaurus_app <- allometr_db$get_data('thesaurus_app')
 
-
-# close
-pool::poolClose(allometr_db)
 
 # use_data
-# usethis::use_data(
-#   allometries_table, variables_thesaurus, internal = FALSE, overwrite = TRUE
-# )
+usethis::use_data(
+  allometries_table, variables_thesaurus, thesaurus_app, internal = TRUE, overwrite = TRUE
+)

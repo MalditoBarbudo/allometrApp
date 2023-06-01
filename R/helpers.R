@@ -14,7 +14,7 @@ navbarPageWithInputs <- function(..., inputs) {
 }
 
 # translate app function
-translate_app <- function(id, lang, db) {
+translate_app <- function(id, lang) {
 
   translate_logic <- function(data_filtered, id) {
 
@@ -27,18 +27,24 @@ translate_app <- function(id, lang, db) {
 
   id |>
     purrr::map_chr(
-      ~ db$get_data('thesaurus_app') |>
+      ~ thesaurus_app |>
         dplyr::filter(text_id == .x) |>
         translate_logic(.x)
     )
 }
 
-get_independent_vars_helper <- function(allom_desc) {
-  iv1 <- purrr::map_depth(allom_desc, 1, 'independent_var_1') |> purrr::flatten_chr()
-  iv2 <- purrr::map_depth(allom_desc, 1, 'independent_var_2') |> purrr::flatten_chr()
-  iv3 <- purrr::map_depth(allom_desc, 1, 'independent_var_3') |> purrr::flatten_chr()
-
-  c(iv1, iv2, iv3) |>
-    unique() |>
-    purrr::discard(function(x) {is.na(x)})
+get_independent_vars_helper <- function(allom_id) {
+  # iv1 <- purrr::map_depth(allom_desc, 1, 'independent_var_1') |> purrr::flatten_chr()
+  # iv2 <- purrr::map_depth(allom_desc, 1, 'independent_var_2') |> purrr::flatten_chr()
+  # iv3 <- purrr::map_depth(allom_desc, 1, 'independent_var_3') |> purrr::flatten_chr()
+  #
+  # c(iv1, iv2, iv3) |>
+  #   unique() |>
+  #   purrr::discard(function(x) {is.na(x)})
+  allometries_table |>
+    dplyr::filter(allometry_id %in% allom_id) |>
+    dplyr::select(dplyr::matches("^independent_var_[0-9]$")) |>
+    purrr::flatten_chr() |>
+    purrr::discard(function(x) {is.na(x)}) |>
+    unique()
 }

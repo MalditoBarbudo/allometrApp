@@ -101,12 +101,11 @@ mod_dataInput <- function(
 #' @param data data
 #' @param vars vars
 #' @param lang lang value
-#' @param db database
 #'
 #' @export
 mod_data <- function(
   input, output, session,
-  data, vars, lang, db
+  data, vars, lang
 ) {
 
   data <- as.data.frame(data)
@@ -117,7 +116,7 @@ mod_data <- function(
   purrr::walk(vars, function(x) {
     names_to_translate <- sort(unique(data[[x]]))
     vals <- names_to_translate |>
-      purrr::set_names(translate_app(names_to_translate, 'cat', db))
+      purrr::set_names(translate_app(names_to_translate, 'cat'))
     shiny::updateSelectizeInput(
       session = session, inputId = x,
       choices = vals, server = TRUE
@@ -132,7 +131,7 @@ mod_data <- function(
       purrr::walk(vars, function(x) {
         names_to_translate <- sort(unique(data[[x]]))
         vals <- names_to_translate |>
-          purrr::set_names(translate_app(names_to_translate, lang(), db))
+          purrr::set_names(translate_app(names_to_translate, lang()))
         shiny::updateSelectizeInput(
           session = session, inputId = x,
           choices = vals, server = TRUE
@@ -149,7 +148,7 @@ mod_data <- function(
       purrr::walk(vars, function(x) {
         names_to_translate <- sort(unique(data[[x]]))
         vals <- names_to_translate |>
-          purrr::set_names(translate_app(names_to_translate, lang(), db))
+          purrr::set_names(translate_app(names_to_translate, lang()))
         shiny::updateSelectizeInput(
           session = session, inputId = x,
           choices = vals, server = TRUE
@@ -198,7 +197,7 @@ mod_data <- function(
               if (is.null(input[[x]])) {
                 names_to_translate <- sort(unique(data[[x]]))
                 vals <- names_to_translate |>
-                  purrr::set_names(translate_app(names_to_translate, lang(), db))
+                  purrr::set_names(translate_app(names_to_translate, lang()))
                 shiny::updateSelectizeInput(
                   session = session, inputId = x,
                   choices = vals, server = TRUE
@@ -211,7 +210,7 @@ mod_data <- function(
           if (is.null(input[[x]])) {
             names_to_translate <- sort(unique(data[[x]]))
             vals <- names_to_translate |>
-              purrr::set_names(translate_app(names_to_translate, lang(), db))
+              purrr::set_names(translate_app(names_to_translate, lang()))
             shiny::updateSelectizeInput(
               session = session, inputId = x,
               choices = vals, server = TRUE
