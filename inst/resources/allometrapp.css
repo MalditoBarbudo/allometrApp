@@ -20,6 +20,6 @@ div.table_container {
 /* table body */
 table.dataTable tbody tr {
   background-color: var(--main-bg-color) !important;
-  color: black;
+  color: var(--main-dark-color);
 }
 
