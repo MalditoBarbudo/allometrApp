@@ -51,11 +51,11 @@ $(document).on('shiny:disconnected', function(event) {
       shiny::tags$script(keep_alive_script),
       # corporate image css
       shiny::includeCSS(
-        system.file('resources', 'corp_image.css', package = 'allometrApp')
+        system.file('apps_css', 'corp_image.css', package = 'lfcdata')
       ),
       # custom css
       shiny::includeCSS(
-        system.file('resources', 'allometrapp.css', package = 'allometrApp')
+        system.file('apps_css', 'allometrapp.css', package = 'lfcdata')
       )
     ),
 
