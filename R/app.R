@@ -37,8 +37,8 @@ $(document).on('shiny:disconnected', function(event) {
     shinyjs::useShinyjs(),
 
     # waiter/hostess
-    waiter::use_waiter(),
-    waiter::use_hostess(),
+    # waiter::use_waiter(),
+    # waiter::use_hostess(),
     # show waiter on load
     waiter::waiter_show_on_load(
       color = '#F8F9FA',
@@ -139,23 +139,23 @@ $(document).on('shiny:disconnected', function(event) {
     })
 
     # hostess init
-    waiter::waiter_update(
-      html = shiny::tagList(
-        shiny::br(), shiny::br(),
-        waiter::hostess_loader(
-          "loader",
-          svg = 'images/hostess_image.svg',
-          progress_type = 'fill',
-          fill_direction = 'btt',
-          center_page = TRUE
-        )
-      )
-    )
-    hostess_init <- waiter::Hostess$new('loader', infinite = TRUE)
-    hostess_init$start()
-    # close init
-    on.exit(hostess_init$close(), add = TRUE)
-    on.exit(waiter::waiter_hide(), add = TRUE)
+    # waiter::waiter_update(
+    #   html = shiny::tagList(
+    #     shiny::br(), shiny::br(),
+    #     waiter::hostess_loader(
+    #       "loader",
+    #       svg = 'images/hostess_image.svg',
+    #       progress_type = 'fill',
+    #       fill_direction = 'btt',
+    #       center_page = TRUE
+    #     )
+    #   )
+    # )
+    # hostess_init <- waiter::Hostess$new('loader', infinite = TRUE)
+    # hostess_init$start()
+    # # close init
+    # on.exit(hostess_init$close(), add = TRUE)
+    # on.exit(waiter::waiter_hide(), add = TRUE)
 
     ### DB access ################################################################
     allomdb <- lfcdata::allometries()
