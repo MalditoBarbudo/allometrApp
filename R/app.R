@@ -40,10 +40,10 @@ $(document).on('shiny:disconnected', function(event) {
     # waiter::use_waiter(),
     # waiter::use_hostess(),
     # show waiter on load
-    waiter::waiter_show_on_load(
-      color = '#F8F9FA',
-      html = waiter::spin_chasing_dots()
-    ),
+    # waiter::waiter_show_on_load(
+    #   color = '#F8F9FA',
+    #   html = waiter::spin_flowers()
+    # ),
 
     # css
     shiny::tags$head(
@@ -142,13 +142,7 @@ $(document).on('shiny:disconnected', function(event) {
     # waiter::waiter_update(
     #   html = shiny::tagList(
     #     shiny::br(), shiny::br(),
-    #     waiter::hostess_loader(
-    #       "loader",
-    #       svg = 'images/hostess_image.svg',
-    #       progress_type = 'fill',
-    #       fill_direction = 'btt',
-    #       center_page = TRUE
-    #     )
+    #     waiter::spin_flowers()
     #   )
     # )
     # hostess_init <- waiter::Hostess$new('loader', infinite = TRUE)
