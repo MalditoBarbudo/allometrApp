@@ -30,6 +30,26 @@ $(document).on('shiny:disconnected', function(event) {
 });"
   )
 
+  matomo_script <- shiny::HTML(
+    "var _paq = window._paq = window._paq || [];
+_paq.push(['trackPageView']);
+_paq.push(['enableLinkTracking']);
+(function() {
+  var u='https://stats-emf.creaf.cat/';
+  _paq.push(['setTrackerUrl', u+'matomo.php']);
+  _paq.push(['setSiteId', '5']);
+  var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+  g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+})();
+
+// Event Tracking Code
+$(document).on('shiny:inputchanged', function(event) {
+  if (/^mod_data*/.test(event.name)) {
+    _paq.push(['trackEvent', 'dataInputs', 'updates', event.name, 1, {dimension1: event.value}]);
+  }
+});"
+  )
+
   ## UI ####
   ui <- shiny::tagList(
 
@@ -49,6 +69,7 @@ $(document).on('shiny:disconnected', function(event) {
     shiny::tags$head(
       # js script,
       shiny::tags$script(keep_alive_script),
+      shiny::tags$script(matomo_script),
       # corporate image css
       shiny::includeCSS(
         system.file('apps_css', 'corp_image.css', package = 'lfcdata')
