@@ -44,7 +44,7 @@ _paq.push(['enableLinkTracking']);
 
 // Event Tracking Code
 $(document).on('shiny:inputchanged', function(event) {
-  if (/^mod_data*/.test(event.name)) {
+  if (/^allometries_filters*/.test(event.name)) {
     _paq.push(['trackEvent', 'dataInputs', event.name, event.value, 1, {dimension1: event.value}]);
   }
 });"
