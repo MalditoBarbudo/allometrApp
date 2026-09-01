@@ -46,3 +46,22 @@ get_independent_vars_helper <- function(allom_id) {
     purrr::discard(function(x) {is.na(x)}) |>
     unique()
 }
+
+# This function was taken and modified from
+# https://github.com/cwthom/shinyhelper/blob/master/R/helper.R
+add_help <- function(element, title, content, ...) {
+
+  help_icon <- shiny::div(
+    shiny::tagAppendAttributes(
+      tag = shiny::icon(name = "circle-question", class = "help"),
+      "data-modal-title" = title,
+      "data-modal-content" = content
+    ),
+    class = "help-container",
+    ...
+  )
+
+  shiny::tagList(
+    shiny::div(element, help_icon, class = "help-wrapper")
+  )
+}

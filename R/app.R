@@ -77,6 +77,9 @@ $(document).on('shiny:inputchanged', function(event) {
       # custom css
       shiny::includeCSS(
         system.file('apps_css', 'allometrapp.css', package = 'lfcdata')
+      ),
+      shiny::includeScript(
+        system.file("apps_js", "help.js", package = "lfcdata")
       )
     ),
 
@@ -241,7 +244,16 @@ $(document).on('shiny:inputchanged', function(event) {
 
           sidebarPanel = shiny::sidebarPanel(
             width = 3,
-            shiny::h4(translate_app('sidebar_filter_h4', lang_declared)),
+            shiny::h4(translate_app('sidebar_filter_h4', lang_declared)) |>
+              add_help(
+                title = translate_app("help_filter", lang()),
+                content = shiny::includeMarkdown(
+                  system.file(
+                    'resources', paste0("help_filter_", lang(), ".md"),
+                    package = 'allometrApp'
+                  )
+                )
+              ),
             mod_dataInput(
               id = 'allometries_filters', inline = FALSE,
               params = list(
@@ -537,6 +549,21 @@ $(document).on('shiny:inputchanged', function(event) {
         writexl::write_xlsx(data_res, file)
       }
     )
+
+    # help observer
+    # code taken and modified from
+    # https://github.com/cwthom/shinyhelper/blob/master/R/observe_helpers.R
+    shiny::observe({
+      help_params <- input$`help-modal_params`
+      help_modal <- shiny::modalDialog(
+        shiny::HTML(help_params$content),
+        title = help_params$title,
+        footer = shiny::modalButton(translate_app("dismiss", lang())),
+        size = "l", easyClose = TRUE, fade = TRUE
+      )
+      shiny::showModal(help_modal)
+    }) |>
+      shiny::bindEvent(input$`help-modal_params`)
 
   } # end of server function
 
